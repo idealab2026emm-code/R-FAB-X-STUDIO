@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Scan Materials - Check-in/Check-out" />
+  <title>Scan Materials - Check-in/Check-out</title>
+  <link rel="stylesheet" href="../css/scan.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- QR Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+</head>
+
+<body>
+  <div class="background-gradient"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="userhome.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="brand-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <span class="brand-text">Scan Materials</span>
+      </div>
+
+      <div class="navbar-right">
+        <span class="scan-status" id="scanStatus">
+          <i class="fas fa-spinner fa-spin"></i> Ready to scan
+        </span>
+        <button class="logout-btn" onclick="window.location.href='userhome.html'">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Title Section -->
+    <section class="title-section">
+      <h1>Check-in / Check-out Materials</h1>
+      <p>Scan QR code or search for items to manage your materials</p>
+
+
+    </section>
+
+    <!-- Search & Scan Container -->
+    <section class="scan-container">
+      <!-- Search Box -->
+      <div class="search-section">
+        <div class="search-box-container">
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by item code or name..."
+              autocomplete="off" spellcheck="false" style="background: white !important; color: #000000 !important;" />
+            <div class="search-focus-line"></div>
+          </div>
+          <div id="searchResults" class="search-results"></div>
+        </div>
+      </div>
+
+      <!-- QR Scanner -->
+      <div class="scanner-card">
+        <div class="scanner-header">
+          <h2>QR Code Scanner</h2>
+          <div class="scanner-controls">
+            <button class="control-btn" id="startScanBtn" onclick="startScanner()">
+              <i class="fas fa-play"></i> Start Scan
+            </button>
+            <button class="control-btn stop" id="stopScanBtn" onclick="stopScanner()" style="display: none;">
+              <i class="fas fa-stop"></i> Stop Scan
+            </button>
+          </div>
+        </div>
+
+        <div id="reader" class="reader-container"></div>
+
+        <p class="scanner-hint">
+          <i class="fas fa-lightbulb"></i>
+          Allow camera access and point at QR code
+        </p>
+      </div>
+
+      <!-- Material Details Card -->
+      <div id="detailsContainer" class="details-container" style="display: none;">
+        <div class="details-card">
+          <div class="details-header">
+            <h2 id="materialName">--</h2>
+            <button class="close-btn" onclick="clearDetails()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="details-info">
+            <div class="info-row">
+              <span class="info-label">
+                <i class="fas fa-barcode"></i> Item Code
+              </span>
+              <span class="info-value" id="itemCode">--</span>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">
+                <i class="fas fa-box"></i> Total Quantity
+              </span>
+              <span class="info-value" id="totalQty">--</span>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">
+                <i class="fas fa-check-circle"></i> Available Quantity
+              </span>
+              <span class="info-value available" id="availableQty">--</span>
+            </div>
+          </div>
+
+          <!-- Quantity Input Section -->
+          <div class="quantity-section">
+            <label for="quantityInput" class="quantity-label">
+              <i class="fas fa-calculator"></i> Quantity to Process
+            </label>
+
+            <div class="quantity-input-wrapper">
+              <button class="qty-btn" onclick="decreaseQuantity()">
+                <i class="fas fa-minus"></i>
+              </button>
+
+              <input type="number" id="quantityInput" class="quantity-input" value="1" min="1" max="999" />
+
+              <button class="qty-btn" onclick="increaseQuantity()">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+
+            <small class="qty-hint">Enter the number of materials to process</small>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-checkout" onclick="checkout()">
+              <div class="btn-text-wrapper">
+                <div class="btn-title"><i class="fas fa-sign-out-alt"></i> Checkout</div>
+                <div class="btn-desc">Take material from Lab</div>
+              </div>
+            </button>
+
+            <button class="btn btn-checkin" onclick="checkin()">
+              <div class="btn-text-wrapper">
+                <div class="btn-title"><i class="fas fa-sign-in-alt"></i> Check-in</div>
+                <div class="btn-desc">Return material to Lab</div>
+              </div>
+            </button>
+          </div>
+
+          <button class="btn btn-secondary" onclick="scanAgain()">
+            <i class="fas fa-redo"></i>
+            <span>Scan Again</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="errorContainer" class="error-container" style="display: none;">
+        <div class="error-card">
+          <div class="error-icon">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <h3>Material Not Found</h3>
+          <p id="errorMessage">The scanned code does not exist in the system.</p>
+          <button class="btn btn-secondary" onclick="scanAgain()">
+            <i class="fas fa-redo"></i>
+            <span>Try Again</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </footer>
+
+  <script src="../js/scan.js" defer></script>
+</body>
+
+</html>

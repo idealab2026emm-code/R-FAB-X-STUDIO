@@ -1,0 +1,846 @@
+/* ============================================
+   VARIABLES & ROOT STYLES
+   ============================================ */
+
+:root {
+  /* Colors - Dimmed/Dark Theme */
+  --primary-blue: #0052cc;
+  --primary-blue-dark: #003d99;
+  --primary-blue-light: #1e293b;
+  --secondary-blue: #3b82f6;
+  --accent-blue: #60a5fa;
+
+  --white: #e2e8f0;
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-light: #94a3b8;
+
+  /* Borders */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-focus: #3b82f6;
+
+  /* Background */
+  --bg-light: #0f172a;
+  --bg-lighter: #1e293b;
+
+  /* Shadow */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.2);
+
+  /* Typography */
+  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", sans-serif;
+  --font-display: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ============================================
+   BACKGROUND GRADIENT
+   ============================================ */
+
+.background-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #020617 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ============================================
+   LOGIN CONTAINER & CARD
+   ============================================ */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  animation: scaleIn 0.6s ease-out 0.1s both;
+}
+
+/* ============================================
+   CARD HEADER
+   ============================================ */
+
+.card-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.card-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+/* ============================================
+   FORM STYLES
+   ============================================ */
+
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-xl);
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.form-group:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.form-group:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.label-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: var(--radius-sm);
+  color: #0066ff;
+  font-size: 11px;
+  transition: var(--transition-fast);
+}
+
+.form-group:hover .label-icon {
+  transform: scale(1.1);
+  background: #ffffff;
+}
+
+/* ============================================
+   INPUT WRAPPER & STYLING
+   ============================================ */
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--border-focus);
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), var(--shadow-md);
+}
+
+/* Autofill Hack to keep dark background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.input-wrapper:hover:not(:focus-within) {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.input-icon {
+  position: absolute;
+  left: var(--spacing-md);
+  color: #0066ff;
+  font-size: 16px;
+  pointer-events: none;
+  transition: color var(--transition-fast);
+  z-index: 1;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: #0066ff;
+}
+
+.form-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 12px 12px 12px 44px;
+  font-size: 16px;
+  color: var(--text-primary);
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color var(--transition-fast);
+}
+
+.form-input::placeholder {
+  color: #888;
+}
+
+.form-input:focus::placeholder {
+  color: #aaa;
+}
+
+.input-focus-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0066ff 0%, #0099ff 100%);
+  width: 0;
+  transition: width var(--transition-normal);
+}
+
+.input-wrapper:focus-within .input-focus-line {
+  width: 100%;
+}
+
+/* ============================================
+   PASSWORD TOGGLE BUTTON
+   ============================================ */
+
+.password-wrapper {
+  padding-right: 8px;
+}
+
+.password-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  color: #0066ff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  background: rgba(0, 102, 255, 0.15);
+  color: #0066ff;
+}
+
+.password-toggle:active {
+  background: rgba(0, 102, 255, 0.25);
+  transform: scale(0.95);
+}
+
+/* ============================================
+   LOGIN BUTTON
+   ============================================ */
+
+.login-button {
+  width: 100%;
+  padding: 14px 24px;
+  min-height: 48px;
+  background: white;
+  color: #0066ff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+  box-shadow: var(--shadow-md);
+  letter-spacing: 0.3px;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.login-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-text {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: transform var(--transition-normal);
+}
+
+.login-button:hover .button-icon {
+  transform: translateX(3px);
+}
+
+.button-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 102, 255, 0.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.login-button:active .button-glow {
+  animation: ripple 0.6s ease-out;
+}
+
+/* ============================================
+   STATUS MESSAGE
+   ============================================ */
+
+.status-message {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  min-height: 20px;
+  animation: slideDown 0.3s ease-out;
+  display: none;
+}
+
+.status-message.show {
+  display: block;
+}
+
+.status-message.success {
+  background: #e6fce6;
+  color: #1b5e1b;
+  border: 1px solid #b3e5b3;
+}
+
+.status-message.error {
+  background: #ffe6e6;
+  color: #8b0000;
+  border: 1px solid #ffb3b3;
+}
+
+.status-message.loading {
+  background: white;
+  color: #2768F5;
+  border: 1px solid rgba(39, 104, 245, 0.4);
+}
+
+/* ============================================
+   FORM FOOTER LINKS
+   ============================================ */
+
+.form-footer {
+  margin-top: var(--spacing-lg);
+  text-align: center;
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.forgot-link {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.forgot-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width var(--transition-fast);
+}
+
+.forgot-link:hover {
+  color: #ffffff;
+}
+
+.forgot-link:hover::after {
+  width: 100%;
+}
+
+.signup-text {
+  margin-top: var(--spacing-md);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.signup-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  position: relative;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.signup-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 6px;
+  width: calc(100% - 12px);
+  height: 2px;
+  background: white;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-fast);
+}
+
+.signup-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.signup-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+
+/* ============================================
+   DIVIDER
+   ============================================ */
+
+.form-divider {
+  position: relative;
+  text-align: center;
+  margin: var(--spacing-lg) 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  animation: fadeIn 0.6s ease-out 0.6s both;
+}
+
+.form-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  z-index: 0;
+}
+
+.form-divider span {
+  position: relative;
+  background: linear-gradient(135deg, #0066ff 0%, #0099ff 100%);
+  padding: 0 var(--spacing-md);
+}
+
+/* ============================================
+   CREATE ACCOUNT SECTION
+   ============================================ */
+
+.create-account-section {
+  text-align: center;
+  animation: fadeInUp 0.6s ease-out 0.7s both;
+}
+
+.create-account-text {
+  font-size: 14px;
+  color: white;
+  margin: 0;
+}
+
+.create-account-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  position: relative;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.create-account-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 6px;
+  width: calc(100% - 12px);
+  height: 2px;
+  background: white;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-fast);
+}
+
+.create-account-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.create-account-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.login-footer {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-2xl);
+  flex-wrap: wrap;
+  animation: fadeIn 0.6s ease-out 0.8s both;
+}
+
+.footer-link {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.footer-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: white;
+  transition: width var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: white;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ripple {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  to {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 640px) {
+  .login-card {
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .card-header h1 {
+    font-size: 24px;
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .login-footer {
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: var(--spacing-md);
+  }
+
+  .login-container {
+    padding: var(--spacing-sm);
+    min-height: 100vh;
+  }
+
+  .login-card {
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-header h1 {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .form-label {
+    font-size: 12px;
+  }
+
+  .form-input {
+    font-size: 16px;
+    padding: 11px 11px 11px 40px;
+  }
+
+  .input-wrapper {
+    min-height: 44px;
+  }
+
+  .login-button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .login-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .footer-link {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    max-width: 100%;
+  }
+
+  .card-header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .create-account-text {
+    font-size: 12px;
+  }
+
+  .form-divider span {
+    font-size: 12px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: more) {
+  :root {
+    --border-color: #000;
+    --text-primary: #000;
+    --text-secondary: #333;
+  }
+
+  .login-card {
+    border-width: 2px;
+  }
+
+  .form-input {
+    border: 1px solid #000;
+  }
+}

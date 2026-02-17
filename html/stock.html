@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stock Management - View and Search Materials" />
+  <title>Stock Management - Materials</title>
+  <link rel="stylesheet" href="../css/stock.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="background-gradient"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="userhome.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="brand-icon">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <span class="brand-text">Stock Management</span>
+      </div>
+
+      <button class="logout-btn" onclick="window.location.href='userhome.html'">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Title Section -->
+    <section class="title-section">
+      <h1>Material Stock Details</h1>
+      <p>View your complete inventory</p>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-card">
+        <h2 class="search-title">Search by Code or Name</h2>
+
+        <div class="search-controls">
+          <!-- Search Input -->
+          <div class="search-input-group">
+            <div class="search-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" id="material_code" class="search-input" placeholder="Enter material code or name..."
+                autocomplete="off" style="background: white !important; color: #000000 !important;" />
+              <div class="search-focus-line"></div>
+            </div>
+          </div>
+
+          <!-- Only QR Scan Button -->
+          <div class="button-group">
+            <button class="btn btn-qr" onclick="window.location.href='scan.html'">
+              <i class="fas fa-qrcode"></i>
+              <span>QR Scan</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+      </div>
+    </section>
+
+    <!-- Stock Table Section -->
+    <section class="table-section">
+      <h2 class="section-title">Stock Inventory</h2>
+
+      <div class="table-container">
+        <div id="stockTable" class="stock-table"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </footer>
+
+  <script src="../js/stock.js" defer></script>
+</body>
+
+</html>

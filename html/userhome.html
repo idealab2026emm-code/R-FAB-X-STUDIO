@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="User Dashboard - Manage your account" />
+  <title>Dashboard - User Portal</title>
+
+  <link rel="stylesheet" href="../css/userhome.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+
+  <div class="background-gradient"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <div class="brand-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <span class="brand-text">Dashboard</span>
+      </div>
+
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <h1>Welcome Back</h1>
+          <p id="userName" class="user-greeting">Loading...</p>
+          <p class="welcome-subtitle">Manage your daily activities and account</p>
+        </div>
+        <div class="welcome-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Cards Section -->
+    <section class="actions-section">
+      <h2 class="section-title">Quick Actions</h2>
+
+      <div class="action-cards-grid">
+
+        <div class="action-card" onclick="goScan()">
+          <div class="action-card-header">
+            <div class="action-icon scan-icon">
+              <i class="fas fa-qrcode"></i>
+            </div>
+          </div>
+          <div class="action-card-content">
+            <h3>Check In/Out</h3>
+            <p>Scan QR code or RFID</p>
+          </div>
+          <div class="action-card-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="goStock()">
+          <div class="action-card-header">
+            <div class="action-icon inventory-icon">
+              <i class="fas fa-list-check"></i>
+            </div>
+          </div>
+          <div class="action-card-content">
+            <h3>My Inventory</h3>
+            <p>View items assigned to you</p>
+          </div>
+          <div class="action-card-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="goProfile()">
+          <div class="action-card-header">
+            <div class="action-icon profile-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+          </div>
+          <div class="action-card-content">
+            <h3>My Profile</h3>
+            <p>View and edit your information</p>
+          </div>
+          <div class="action-card-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </footer>
+
+  <script src="../js/userhome.js" defer></script>
+</body>
+
+</html>

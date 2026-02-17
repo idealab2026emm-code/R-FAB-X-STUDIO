@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Materials</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/materialsview.css" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <div class="header">
+    <h1><i class="fas fa-boxes"></i> Materials Inventory</h1>
+    <div class="header-actions">
+      <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <!-- FILTERS AND STATS -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <input type="text" id="searchInput" placeholder="Search by material code or name..." onkeyup="filterMaterials()"
+          class="search-input" />
+      </div>
+      <div class="stats-mini">
+        <span>Total Items: <strong id="totalItems">0</strong></span>
+        <span>Total Quantity: <strong id="totalQuantity">0</strong></span>
+        <span>Available: <strong id="totalAvailable">0</strong></span>
+      </div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="table-section">
+      <div class="table-header">
+        <h2>All Materials</h2>
+        <button class="download-btn" onclick="downloadMaterials()">
+          <i class="fas fa-download"></i> Download Excel
+        </button>
+      </div>
+
+      <div class="table-scroll">
+        <table class="materials-table" id="materialsTable">
+          <thead>
+            <tr>
+              <th>Material Code</th>
+              <th>Material Name</th>
+              <th>Total Qty</th>
+              <th>Available Qty</th>
+            </tr>
+          </thead>
+          <tbody id="materialsBody">
+            <tr class="loading-row">
+              <td colspan="4">
+                <div class="spinner"></div> Loading materials...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="noDataMsg" class="no-data" style="display: none;">
+        <i class="fas fa-inbox"></i>
+        <p>No materials found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </div>
+
+  <!-- LIBRARIES -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="../js/materialsview.js" defer></script>
+</body>
+
+</html>

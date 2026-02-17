@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/adminhome.css" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <div class="header">
+    <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+    <div class="header-actions">
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <!-- WELCOME SECTION -->
+    <div class="welcome-section">
+      <h2>Welcome Admin!</h2>
+      <p>Manage your inventory system from this dashboard</p>
+    </div>
+
+    <!-- STATS GRID -->
+    <div class="stats-grid">
+      <div class="stat-card success">
+        <div class="stat-label">Total Materials</div>
+        <div class="stat-number" id="totalMat">0</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-number" id="totalUsers">0</div>
+      </div>
+    </div>
+
+    <!-- MAIN CARDS GRID (2x2) -->
+    <div class="cards-grid">
+      <!-- MANAGE USERS -->
+      <div class="action-card" onclick="openManageUsersModal()">
+        <div class="card-icon purple"><i class="fas fa-users-cog"></i></div>
+        <h3>Manage Users</h3>
+        <p>Register new users or upload from Excel</p>
+        <button class="card-btn">Open</button>
+      </div>
+
+      <!-- VIEW MATERIALS -->
+      <div class="action-card" onclick="openViewMaterialsModal()">
+        <div class="card-icon orange"><i class="fas fa-box"></i></div>
+        <h3>View Materials</h3>
+        <p>View inventory and upload materials</p>
+        <button class="card-btn">Open</button>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="action-card" onclick="goPage('transactions.html')">
+        <div class="card-icon blue"><i class="fas fa-exchange-alt"></i></div>
+        <h3>Transactions</h3>
+        <p>View all checkout and checkin activities</p>
+        <button class="card-btn">Open</button>
+      </div>
+
+      <!-- STOCK BOOK -->
+      <div class="action-card" onclick="goPage('stockbook.html')">
+        <div class="card-icon green"><i class="fas fa-book"></i></div>
+        <h3>Stock Book</h3>
+        <p>View detailed stock history and records</p>
+        <button class="card-btn">Open</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE USERS MODAL -->
+  <div id="manageUsersModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-users-cog"></i> Manage Users</h2>
+        <button class="modal-close" onclick="closeManageUsersModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="options-grid">
+          <!-- Register Single User -->
+          <div class="option-card" onclick="goPage('register.html')">
+            <div class="option-icon blue">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h4>Register User</h4>
+            <p>Add a single user manually</p>
+          </div>
+
+          <!-- Upload Users -->
+          <div class="option-card" onclick="closeManageUsersModal(); openUploadUsersModal();">
+            <div class="option-icon green">
+              <i class="fas fa-file-upload"></i>
+            </div>
+            <h4>Upload Users</h4>
+            <p>Import multiple users from Excel</p>
+            <button class="download-template-btn" onclick="event.stopPropagation(); downloadUsersTemplate()">
+              <i class="fas fa-download"></i> Download Template
+            </button>
+          </div>
+
+          <!-- View All Users -->
+          <div class="option-card" onclick="goPage('manageusers.html')">
+            <div class="option-icon purple">
+              <i class="fas fa-list"></i>
+            </div>
+            <h4>View All Users</h4>
+            <p>View, edit, and delete users</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW MATERIALS MODAL -->
+  <div id="viewMaterialsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-box"></i> View Materials</h2>
+        <button class="modal-close" onclick="closeViewMaterialsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="options-grid">
+          <!-- View All Materials -->
+          <div class="option-card" onclick="goPage('materialsview.html')">
+            <div class="option-icon blue">
+              <i class="fas fa-list-ul"></i>
+            </div>
+            <h4>View All Materials</h4>
+            <p>Browse the complete inventory</p>
+          </div>
+
+          <!-- Upload Materials -->
+          <div class="option-card" onclick="closeViewMaterialsModal(); openUploadMaterialsModal();">
+            <div class="option-icon orange">
+              <i class="fas fa-file-upload"></i>
+            </div>
+            <h4>Upload Materials</h4>
+            <p>Import materials from Excel</p>
+            <button class="download-template-btn" onclick="event.stopPropagation(); downloadMaterialsTemplate()">
+              <i class="fas fa-download"></i> Download Template
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD USERS MODAL -->
+  <div id="uploadUsersModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Upload Users</h2>
+        <button class="modal-close" onclick="closeUploadUsersModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="uploadUsersMessage" class="alert"></div>
+
+        <!-- Column Information -->
+        <div class="column-info">
+          <h4><i class="fas fa-info-circle"></i> Required Excel Columns</h4>
+          <ul>
+            <li><strong>Username</strong> - Unique username for login</li>
+            <li><strong>Mail</strong> - User's email address</li>
+            <li><strong>Password</strong> - User's password</li>
+            <li><strong>Full Name</strong> - User's complete name</li>
+            <li><strong>Roll No</strong> - Student roll number or ID</li>
+            <li><strong>Department</strong> - User's department</li>
+          </ul>
+          <button class="download-template-btn-inline" onclick="downloadUsersTemplate()">
+            <i class="fas fa-download"></i> Download Template Excel
+          </button>
+        </div>
+
+        <div class="upload-container">
+          <div class="upload-area" id="uploadUsersArea" onclick="triggerUsersFileInput()">
+            <div class="upload-area-content">
+              <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+              <h3>Drop Excel File Here</h3>
+              <p>or click to select from your computer</p>
+            </div>
+            <input type="file" id="usersFileInput" class="upload-input" accept=".xlsx,.xls"
+              onchange="handleUsersFile(event)" />
+          </div>
+        </div>
+
+        <div id="usersFileInfo" class="file-info">
+          <div class="file-name">
+            <i class="fas fa-file-excel"></i>
+            <span id="usersFileName"></span>
+          </div>
+          <button type="button" class="btn-remove" onclick="removeUsersFile()">
+            <i class="fas fa-times"></i> Remove
+          </button>
+        </div>
+
+        <div id="usersPreviewSection" class="preview-section">
+          <h4>Preview (First 5 rows)</h4>
+          <div class="table-scroll">
+            <table class="preview-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Mail</th>
+                  <th>Full Name</th>
+                  <th>Roll No</th>
+                  <th>Department</th>
+                  <th>Password</th>
+                </tr>
+              </thead>
+              <tbody id="usersPreviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUploadUsersModal()">Cancel</button>
+        <button class="btn btn-primary" id="uploadUsersBtn" onclick="uploadUsersData()" style="display: none;">
+          <i class="fas fa-upload"></i> Upload to Database
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD MATERIALS MODAL -->
+  <div id="uploadMaterialsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Upload Materials</h2>
+        <button class="modal-close" onclick="closeUploadMaterialsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="uploadMaterialsMessage" class="alert"></div>
+
+        <!-- Column Information -->
+        <div class="column-info">
+          <h4><i class="fas fa-info-circle"></i> Required Excel Columns</h4>
+          <ul>
+            <li><strong>material_code</strong> - Unique identifier for the material</li>
+            <li><strong>material_name</strong> - Name/description of the material</li>
+          </ul>
+          <button class="download-template-btn-inline" onclick="downloadMaterialsTemplate()">
+            <i class="fas fa-download"></i> Download Template Excel
+          </button>
+        </div>
+
+        <div class="upload-container">
+          <div class="upload-area" id="uploadMaterialsArea" onclick="triggerMaterialsFileInput()">
+            <div class="upload-area-content">
+              <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+              <h3>Drop Excel File Here</h3>
+              <p>or click to select from your computer</p>
+            </div>
+            <input type="file" id="materialsFileInput" class="upload-input" accept=".xlsx,.xls"
+              onchange="handleMaterialsFile(event)" />
+          </div>
+        </div>
+
+        <div id="materialsFileInfo" class="file-info">
+          <div class="file-name">
+            <i class="fas fa-file-excel"></i>
+            <span id="materialsFileName"></span>
+          </div>
+          <button type="button" class="btn-remove" onclick="removeMaterialsFile()">
+            <i class="fas fa-times"></i> Remove
+          </button>
+        </div>
+
+        <div id="materialsPreviewSection" class="preview-section">
+          <h4>Preview (First 5 rows)</h4>
+          <div class="table-scroll">
+            <table class="preview-table">
+              <thead>
+                <tr>
+                  <th>Material Code</th>
+                  <th>Material Name</th>
+                </tr>
+              </thead>
+              <tbody id="materialsPreviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUploadMaterialsModal()">Cancel</button>
+        <button class="btn btn-primary" id="uploadMaterialsBtn" onclick="uploadMaterialsData()" style="display: none;">
+          <i class="fas fa-upload"></i> Upload to Database
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </div>
+
+  <!-- LIBRARIES -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="../js/adminhome.js" defer></script>
+</body>
+
+</html>

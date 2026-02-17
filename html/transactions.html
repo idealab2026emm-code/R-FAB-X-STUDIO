@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Transactions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/transactions.css" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1><i class="fas fa-exchange-alt"></i> All Transactions</h1>
+      <p>View all checkout and checkin activities</p>
+    </div>
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+  </div>
+
+  <!-- CONTAINER -->
+  <div class="container">
+    <!-- SEARCH SECTION -->
+    <div class="search-container">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search" placeholder="Search by username, item code, or item name..." class="search-input"
+          onkeypress="if(event.key==='Enter') search()" />
+        <button class="search-btn" onclick="search()"><i class="fas fa-search"></i> Search</button>
+        <button class="clear-btn" onclick="clearSearch()"><i class="fas fa-times"></i> Clear</button>
+        <button class="download-btn" onclick="downloadAllTransactions()"><i class="fas fa-download"></i> Download
+          Excel</button>
+      </div>
+    </div>
+
+    <!-- STATS CARDS (Clickable Filters) -->
+    <div class="stats-row">
+      <div class="stat-card active" id="cardAll" data-filter="all" onclick="filterByCard('all')">
+        <div class="stat-icon"><i class="fas fa-list"></i></div>
+        <div class="stat-content">
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">Total Transactions</div>
+        </div>
+      </div>
+      <div class="stat-card" id="cardCheckout" data-filter="checkout" onclick="filterByCard('checkout')">
+        <div class="stat-icon checkout"><i class="fas fa-arrow-up"></i></div>
+        <div class="stat-content">
+          <div class="stat-value" id="checkoutCount">0</div>
+          <div class="stat-label">Checkout</div>
+        </div>
+      </div>
+      <div class="stat-card" id="cardCheckin" data-filter="checkin" onclick="filterByCard('checkin')">
+        <div class="stat-icon checkin"><i class="fas fa-arrow-down"></i></div>
+        <div class="stat-content">
+          <div class="stat-value" id="checkinCount">0</div>
+          <div class="stat-label">Checkin</div>
+        </div>
+      </div>
+      <div class="stat-card" id="cardPending" data-filter="pending" onclick="filterByCard('pending')">
+        <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+        <div class="stat-content">
+          <div class="stat-value" id="pendingCount">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="table-container">
+      <div class="table-wrapper" id="tableWrapper">
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th><i class="fas fa-calendar"></i> DATE & TIME</th>
+              <th><i class="fas fa-user"></i> USERNAME</th>
+              <th><i class="fas fa-barcode"></i> ITEM CODE</th>
+              <th><i class="fas fa-box"></i> ITEM NAME</th>
+              <th><i class="fas fa-sort-numeric-up"></i> QTY</th>
+              <th><i class="fas fa-exchange-alt"></i> ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr class="loading-row">
+              <td colspan="6">
+                <div class="spinner"></div>
+                <p>Loading transactions...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- NO DATA MESSAGE -->
+      <div id="noDataMsg" class="no-data-container" style="display: none;">
+        <div class="no-data-icon"><i class="fas fa-inbox"></i></div>
+        <p class="no-data-text">No transactions found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </div>
+
+  <script src="../js/transactions.js" defer></script>
+</body>
+
+</html>

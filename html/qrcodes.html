@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate QR Codes - R-FAB X-LAB</title>
+    <link rel="stylesheet" href="../css/qrcodes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../js/lib/qrcode.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="no-print">
+            <h1><i class="fas fa-qrcode"></i> Generate QR Codes</h1>
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="window.location.href='stockbook.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Stockbook
+                </button>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Selected
+                </button>
+            </div>
+        </header>
+
+        <div class="selection-card no-print">
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 18px;">Step 1: Select Materials</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 13px;"
+                            onclick="selectAll(true)">Select All</button>
+                        <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 13px;"
+                            onclick="selectAll(false)">Clear All</button>
+                    </div>
+                </div>
+
+                <!-- Search Box for Materials -->
+                <div
+                    style="position: relative; display: flex; align-items: center; background: #f8faff; border: 1px solid var(--border-color); border-radius: 8px; padding: 0 12px;">
+                    <i class="fas fa-search" style="color: #999; margin-right: 10px;"></i>
+                    <input type="text" id="matSearch" placeholder="Search by name or code..."
+                        style="width: 100%; border: none; background: transparent; padding: 12px 0; outline: none; font-size: 14px;">
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="materialsTable">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-col">Select</th>
+                            <th>Material Code</th>
+                            <th>Material Name</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materialsBody">
+                        <!-- Loaded via JS -->
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin"></i> Loading materials...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="selection-card no-print">
+            <h2 style="font-size: 18px; margin-bottom: 15px;">Step 2: Preview & Generate</h2>
+            <button class="btn btn-primary" onclick="generateSelected()">
+                <i class="fas fa-sync"></i> Update QR Previews
+            </button>
+        </div>
+
+        <div id="qrGrid" class="qr-grid">
+            <!-- Generated QR codes appear here -->
+            <div class="no-print" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                Select materials above and click "Update QR Previews"
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 R-FAB X-STUDIO</p>
+    </footer>
+
+    <script src="../js/qrcodes.js" defer></script>
+</body>
+
+</html>

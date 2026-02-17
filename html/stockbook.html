@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stock Book - Detailed Material Information" />
+  <title>Stock Book - Material Details</title>
+  <link rel="stylesheet" href="../css/stock.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <style>
+    /* ============== SEARCH SECTION ============== */
+    .search-section {
+      margin-bottom: 32px;
+      animation: slideUp 0.6s ease-out 0.1s both;
+    }
+
+    .search-card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f0f0f0;
+    }
+
+    .search-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-title::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(135deg, #0066ff, #0099ff);
+      border-radius: 2px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 2px solid #0066ff;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .search-wrapper:focus-within {
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2), 0 4px 16px rgba(0, 102, 255, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      color: #0066ff;
+      font-size: 18px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px 14px 14px 48px;
+      font-size: 15px;
+      color: #1a1a1a;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .search-focus-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0066ff 0%, #0099ff 100%);
+      width: 0;
+      transition: width 0.3s ease;
+      z-index: 0;
+    }
+
+    .search-wrapper:focus-within .search-focus-line {
+      width: 100%;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 4px;
+    }
+
+    .search-clear-btn:hover {
+      color: #0066ff;
+    }
+
+    .search-clear-btn.hidden {
+      display: none;
+    }
+
+    /* ============== TABLE STYLING ============== */
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .stockbook-table {
+      font-size: 13px;
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    /* HEADER */
+    .stockbook-table thead {
+      background: linear-gradient(135deg, #0066ff 0%, #0099ff 100%);
+      position: sticky;
+      top: 0;
+    }
+
+    .stockbook-table th {
+      color: white;
+      padding: 18px 14px;
+      text-align: left;
+      font-weight: 700;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 11px;
+      border: none;
+      background: inherit;
+    }
+
+    /* BODY ROWS */
+    .stockbook-table tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.3s ease;
+    }
+
+    .stockbook-table tbody tr:hover {
+      background: linear-gradient(90deg, rgba(0, 102, 255, 0.06) 0%, rgba(0, 102, 255, 0.02) 100%);
+      border-left: 4px solid #0066ff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .stockbook-table tbody tr:last-child {
+      border-bottom: 2px solid #0066ff;
+    }
+
+    /* CELLS */
+    .stockbook-table td {
+      padding: 16px 14px;
+      color: #374151;
+      border: none;
+    }
+
+    /* CODE COLUMN */
+    .code-col {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: #0066ff;
+      background: rgba(0, 102, 255, 0.08);
+      letter-spacing: 0.5px;
+      font-size: 13px;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+
+    /* NAME COLUMN */
+    .name-col {
+      font-weight: 600;
+      color: #1a1a1a;
+      max-width: 200px;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .badge-type {
+      background: rgba(16, 185, 129, 0.15);
+      color: #047857;
+    }
+
+    .badge-category {
+      background: rgba(59, 130, 246, 0.15);
+      color: #1e40af;
+    }
+
+    .badge-empty {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    /* INFO CELLS */
+    .info-cell {
+      color: #6b7280;
+      font-size: 12px;
+      max-width: 150px;
+      word-break: break-word;
+    }
+
+    /* NUMBER CELLS */
+    .number-cell {
+      text-align: center;
+      font-weight: 700;
+      background: rgba(0, 102, 255, 0.04);
+      color: #0066ff;
+      font-size: 14px;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+
+    /* BALANCE CELL */
+    .balance-cell {
+      font-weight: 700;
+      font-size: 14px;
+      color: #374151;
+      background: white;
+      text-align: center;
+      padding: 16px 14px;
+    }
+
+    /* ACTION BUTTONS */
+    .edit-btn {
+      background: linear-gradient(135deg, #0066ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .edit-btn:hover {
+      box-shadow: 0 6px 16px rgba(0, 102, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .edit-btn:active {
+      transform: translateY(0);
+    }
+
+    .edit-btn i {
+      font-size: 11px;
+    }
+
+    /* STATS CARDS */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card-small {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border-left: 4px solid #0066ff;
+    }
+
+    .stat-label-small {
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0066ff;
+    }
+
+    /* EMPTY STATE */
+    .no-data {
+      padding: 60px 20px;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .no-data i {
+      font-size: 56px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+      display: block;
+    }
+
+    .no-data p {
+      font-size: 16px;
+      margin: 0;
+      color: #6b7280;
+    }
+
+    /* ============== EDIT MODAL ============== */
+    .edit-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .edit-modal.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .edit-modal-content {
+      background: white;
+      border-radius: 0px;
+      width: 90%;
+      max-width: 650px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .edit-modal-header {
+      padding: 28px;
+      border-bottom: 2px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #e6f0ff 0%, #f0f4ff 100%);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .edit-modal-header h2 {
+      color: #0066ff;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-qr {
+      background: #10b981;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-qr:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .edit-modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #9ca3af;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .edit-modal-close:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #1f2937;
+    }
+
+    .edit-modal-body {
+      padding: 28px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #0066ff;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 0;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .edit-modal-footer {
+      padding: 24px 28px;
+      border-top: 2px solid #f0f0f0;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      background: #f9fafb;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-cancel {
+      background: #f0f0f0;
+      color: #1f2937;
+    }
+
+    .btn-cancel:hover:not(:disabled) {
+      background: #e0e0e0;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #0066ff, #0099ff);
+      color: white;
+    }
+
+    .btn-save:hover:not(:disabled) {
+      box-shadow: 0 6px 16px rgba(0, 102, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+      margin-right: auto;
+    }
+
+    .btn-delete:hover:not(:disabled) {
+      background: #dc2626;
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .alert-message {
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .alert-message.show {
+      display: block;
+    }
+
+    .alert-message.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 2px solid #86efac;
+    }
+
+    .alert-message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #fecaca;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .stockbook-table {
+        font-size: 12px;
+      }
+
+      .stockbook-table th,
+      .stockbook-table td {
+        padding: 12px 8px;
+      }
+
+      .edit-modal-content {
+        width: 95%;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ADD THIS CSS TO YOUR stockbook.html <style> SECTION */
+
+    .form-select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 0;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: white;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-select option {
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background-gradient"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="adminhome.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="brand-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <span class="brand-text">Stock Book</span>
+      </div>
+      <div class="navbar-right">
+        <button class="btn-qr" onclick="downloadExcel()" style="background: #2563eb;">
+          <i class="fas fa-file-excel"></i>
+          <span>Download Excel</span>
+        </button>
+        <button class="btn-qr" onclick="window.location.href='qrcodes.html'">
+          <i class="fas fa-qrcode"></i>
+          <span>Print QR Codes</span>
+        </button>
+        <button class="logout-btn" onclick="window.location.href='adminhome.html'">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Title Section -->
+    <section class="title-section">
+      <h1><i class="fas fa-book-open"></i> Stock Book</h1>
+      <p>Complete inventory management with detailed material records</p>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-card">
+        <h2 class="search-title">Search Materials</h2>
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by material code or name..."
+            autocomplete="off" />
+          <button class="search-clear-btn hidden" id="searchClear" onclick="clearSearch()">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="search-focus-line"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-cards" id="statsSection">
+      <div class="stat-card-small">
+        <div class="stat-label-small">Total Materials</div>
+        <div class="stat-value" id="totalCount">0</div>
+      </div>
+      <div class="stat-card-small">
+        <div class="stat-label-small">Shown / Filtered</div>
+        <div class="stat-value" id="shownCount">0</div>
+      </div>
+      <div class="stat-card-small">
+        <div class="stat-label-small">Total Balance</div>
+        <div class="stat-value" id="totalBalance">0</div>
+      </div>
+    </section>
+
+    <!-- Stock Book Table Section -->
+    <section class="table-section">
+      <h2 class="section-title"><i class="fas fa-table"></i> Material Details</h2>
+
+      <div class="table-container">
+        <div class="table-scroll">
+          <div id="stockTable" class="stock-table"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </footer>
+
+  <!-- EDIT MODAL - UPDATE THIS SECTION IN YOUR stockbook.html -->
+  <div id="editModal" class="edit-modal">
+    <div class="edit-modal-content">
+      <div class="edit-modal-header">
+        <h2><i class="fas fa-edit"></i> Edit Material</h2>
+        <button class="edit-modal-close" onclick="closeEditModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="edit-modal-body">
+        <div id="editMessage" class="alert-message"></div>
+
+        <form id="editForm" onsubmit="saveMaterialData(event)">
+          <input type="hidden" id="editId" />
+
+          <div class="form-group">
+            <label for="editMaterialCode">Material Code *</label>
+            <input type="text" id="editMaterialCode" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editMaterialName">Material Name *</label>
+            <input type="text" id="editMaterialName" required />
+          </div>
+
+          <!-- ITEM TYPE AS DROPDOWN -->
+          <div class="form-group">
+            <label for="editItemType">Item Type</label>
+            <select id="editItemType" class="form-select">
+              <option value="">Select Item Type</option>
+              <option value="Mandatory Equipment">Mandatory Equipment</option>
+              <option value="Consumable">Consumable</option>
+              <option value="Tool">Tool</option>
+            </select>
+          </div>
+
+          <!-- REMOVED CATEGORY FIELD -->
+
+          <div class="form-group">
+            <label for="editSupplierAddress">Supplier Address</label>
+            <textarea id="editSupplierAddress"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editBillNo">Bill No / Invoice</label>
+            <input type="text" id="editBillNo" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editOpeningBalance">Opening Balance</label>
+              <input type="number" id="editOpeningBalance" />
+            </div>
+            <div class="form-group">
+              <label for="editQuantityReceived">Quantity Received</label>
+              <input type="number" id="editQuantityReceived" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editQuantityIssued">Quantity Issued</label>
+              <input type="number" id="editQuantityIssued" />
+            </div>
+            <div class="form-group">
+              <label for="editBalance">Balance</label>
+              <input type="number" id="editBalance" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editAmountWithGst">Amount with GST</label>
+              <input type="number" step="0.01" id="editAmountWithGst" />
+            </div>
+            <div class="form-group">
+              <label for="editAvailableQty">Available Quantity</label>
+              <input type="number" id="editAvailableQty" />
+            </div>
+          </div>
+
+          <div class="edit-modal-footer">
+            <button type="button" class="btn btn-delete" onclick="deleteMaterial()">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+              <button type="submit" class="btn btn-save">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+      <script src="../js/stockbook.js" defer></script>
+</body>
+
+</html>

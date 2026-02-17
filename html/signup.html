@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Sign up for a new account" />
+    <title>Sign Up - R-FAB X-STUDIO</title>
+    <link rel="stylesheet" href="../css/signup.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="background-gradient"></div>
+
+    <main class="signup-container">
+        <div class="signup-card">
+            <!-- Header Section -->
+            <div class="card-header">
+                <h1>Create Account</h1>
+                <p class="subtitle">Join R-FAB X-STUDIO Lab Management System</p>
+            </div>
+
+            <!-- Form Section -->
+            <form class="signup-form" id="signupForm">
+
+                <!-- Email Input (First - Most Important) -->
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <span class="label-text">Email Address</span>
+                        <span class="label-required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-envelope"></i>
+                        <input type="email" id="email" class="form-input" placeholder="yourname@rathinam.in" required
+                            autocomplete="email" />
+                        <div class="input-focus-line"></div>
+                    </div>
+                    <small class="input-hint">Must be a valid @rathinam.in email address</small>
+                </div>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="fullname" class="form-label">
+                        <span class="label-text">Full Name</span>
+                        <span class="label-required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-user"></i>
+                        <input type="text" id="fullname" class="form-input" placeholder="Enter your full name" required
+                            autocomplete="name" />
+                        <div class="input-focus-line"></div>
+                    </div>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <span class="label-text">Username</span>
+                        <span class="label-required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-at"></i>
+                        <input type="text" id="username" class="form-input" placeholder="Choose a username" required
+                            autocomplete="username" />
+                        <div class="input-focus-line"></div>
+                    </div>
+                </div>
+
+                <!-- Roll Number and Department (Side by Side) -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rollno" class="form-label">
+                            <span class="label-text">Roll Number</span>
+                            <span class="label-required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="input-icon fas fa-id-badge"></i>
+                            <input type="text" id="rollno" class="form-input" placeholder="e.g., 24110076" required />
+                            <div class="input-focus-line"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department" class="form-label">
+                            <span class="label-text">Department</span>
+                            <span class="label-required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="input-icon fas fa-building"></i>
+                            <input type="text" id="department" class="form-input" placeholder="e.g., CSE(AIML)"
+                                required />
+                            <div class="input-focus-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <span class="label-text">Password</span>
+                        <span class="label-required">*</span>
+                    </label>
+                    <div class="input-wrapper password-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="password" class="form-input" placeholder="Create a strong password"
+                            required autocomplete="new-password" />
+                        <button type="button" class="password-toggle" id="togglePassword"
+                            aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="input-focus-line"></div>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">
+                        <span class="label-text">Confirm Password</span>
+                        <span class="label-required">*</span>
+                    </label>
+                    <div class="input-wrapper password-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" class="form-input"
+                            placeholder="Re-enter your password" required autocomplete="new-password" />
+                        <button type="button" class="password-toggle" id="toggleConfirmPassword"
+                            aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="input-focus-line"></div>
+                    </div>
+                </div>
+
+                <!-- Sign Up Button -->
+                <button type="submit" class="signup-button">
+                    <span class="button-text">Create Account</span>
+                    <span class="button-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                    <div class="button-glow"></div>
+                </button>
+
+                <!-- Status Message -->
+                <div id="statusMessage" class="status-message" role="alert"></div>
+
+                <!-- Login Link -->
+                <div class="form-footer">
+                    <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 R-FAB X-STUDIO</p>
+    </footer>
+
+    <script src="../js/signup.js" defer></script>
+</body>
+
+</html>

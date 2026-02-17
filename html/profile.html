@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="User Profile - Edit Your Information" />
+  <title>My Profile - User Account</title>
+  <link rel="stylesheet" href="../css/profile.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="background-gradient"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="userhome.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="brand-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <span class="brand-text">My Profile</span>
+      </div>
+
+      <button class="logout-btn" onclick="window.location.href='userhome.html'">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Title Section -->
+    <section class="title-section">
+      <h1>My Profile</h1>
+      <p>View your profile information</p>
+    </section>
+
+    <!-- Profile Card -->
+    <section class="profile-section">
+      <div class="profile-card">
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="avatar-container">
+            <div class="avatar">
+              <i class="fas fa-user"></i>
+            </div>
+          </div>
+          <div class="profile-info-header">
+            <h2 id="profileName">Loading...</h2>
+            <p id="profileEmail">--</p>
+          </div>
+        </div>
+
+        <!-- User Information Display -->
+        <div class="user-info-display">
+          <div class="info-item">
+            <div class="info-item-label">
+              <i class="fas fa-envelope"></i>
+              E-mail
+            </div>
+            <div class="info-item-value" id="displayEmail">
+              --
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-item-label">
+              <i class="fas fa-id-card"></i>
+              Roll Number
+            </div>
+            <div class="info-item-value" id="displayRollNo">
+              --
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-item-label">
+              <i class="fas fa-briefcase"></i>
+              Department
+            </div>
+            <div class="info-item-value" id="displayDepartment">
+              --
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Footer -->
+        <div class="profile-footer">
+          <p class="footer-text">
+            <i class="fas fa-lock"></i>
+            Your personal information is secure and encrypted
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Account Info Section -->
+    <section class="account-section">
+      <h2 class="section-title">Account Information</h2>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-id-card"></i>
+          </div>
+          <div class="info-content">
+            <p class="info-label">Username</p>
+            <p class="info-value" id="accountUsername">--</p>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="info-content">
+            <p class="info-label">Account Status</p>
+            <p class="info-value status-active">Active</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 R-FAB X-STUDIO</p>
+  </footer>
+
+  <script src="../js/profile.js" defer></script>
+</body>
+
+</html>
