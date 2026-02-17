@@ -1541,10 +1541,28 @@ async function runMigrations() {
       console.log("  ✓ Column exists: transactions.quantity");
     }
 
-    console.log("🔧 Migrations complete!");
-  } catch (err) {
-    console.error("❌ Migration error:", err.message);
+    console.log("  ✓ Column exists: transactions.quantity");
   }
+
+    // ============================================
+    // AUTO-SEED ADMIN USER
+    // ============================================
+    const adminCheck = await pool.query("SELECT * FROM users WHERE username = 'admin'");
+  if (adminCheck.rows.length === 0) {
+    console.log("👤 Admin user not found. Creating default admin...");
+    await pool.query(`
+        INSERT INTO users (username, password, fullname, mail, rollno, department, role)
+        VALUES ('admin', 'admin123', 'System Admin', 'admin@rathinam.in', 'ADMIN001', 'OFFICE', 'admin')
+      `);
+    console.log("✅ Default admin created: admin / admin123");
+  } else {
+    console.log("✓ Admin user exists");
+  }
+
+  console.log("🔧 Migrations complete!");
+} catch (err) {
+  console.error("❌ Migration error:", err.message);
+}
 }
 
 // ============================================
