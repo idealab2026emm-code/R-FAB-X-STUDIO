@@ -40,7 +40,7 @@ function initializePage() {
 
 async function loadAllMaterials() {
   try {
-    const response = await fetch(`http://localhost:5000/materials`);
+    const response = await fetch(`/materials`);
     if (response.ok) {
       allMaterialsCache = await response.json();
       console.log(`✓ Loaded ${allMaterialsCache.length} materials for search`);
@@ -162,7 +162,7 @@ async function handleScannedCode(code) {
 
   try {
     // Use encodeURIComponent to handle special characters in the code
-    const response = await fetch(`http://localhost:5000/materials/${encodeURIComponent(code)}`);
+    const response = await fetch(`/materials/${encodeURIComponent(code)}`);
 
     if (!response.ok) {
       showError(
@@ -260,7 +260,7 @@ async function performSearch(query) {
     // SEARCH BY CODE - Always try to get exact code from backend
     try {
       const codeResponse = await fetch(
-        `http://localhost:5000/materials/${encodeURIComponent(query)}`
+        `/materials/${encodeURIComponent(query)}`
       );
 
       if (codeResponse.ok) {
@@ -400,7 +400,7 @@ async function selectSearchResult(itemCode) {
   updateScanStatus("Loading material...", true);
 
   try {
-    const response = await fetch(`http://localhost:5000/materials/${itemCode}`);
+    const response = await fetch(`/materials/${itemCode}`);
 
     if (!response.ok) {
       showError("Material Not Found", "Unable to load material details.");
@@ -535,7 +535,7 @@ async function checkout() {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/checkout", {
+    const response = await fetch("/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -584,7 +584,7 @@ async function checkin() {
     console.log(`🔍 Checking borrowed quantity for user: ${user.username}, material: ${materialCode}`);
 
     const borrowResponse = await fetch(
-      `http://localhost:5000/api/user-borrowed-quantity?username=${encodeURIComponent(user.username)}&material_code=${encodeURIComponent(materialCode)}`
+      `/api/user-borrowed-quantity?username=${encodeURIComponent(user.username)}&material_code=${encodeURIComponent(materialCode)}`
     );
 
     if (!borrowResponse.ok) {
@@ -618,7 +618,7 @@ async function checkin() {
     console.log(`✓ Validation passed: User can return ${quantity} out of ${outstanding} outstanding`);
 
     // STEP 2: Proceed with check-in
-    const response = await fetch("http://localhost:5000/checkin", {
+    const response = await fetch("/checkin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

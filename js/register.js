@@ -35,7 +35,7 @@ async function handleSubmit(event) {
 
   try {
     console.log('📤 Sending request...');
-    const res = await fetch('http://localhost:5000/register', {
+    const res = await fetch('/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, mail, password, fullname, rollno, department })

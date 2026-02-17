@@ -48,7 +48,7 @@ document.getElementById('emailVerificationForm').addEventListener('submit', asyn
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/verify-email', {
+        const response = await fetch('/api/verify-email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', async (e
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/reset-password', {
+        const response = await fetch('/api/reset-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

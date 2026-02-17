@@ -45,7 +45,7 @@ async function loadProfile() {
     // FETCH FROM SERVER
     try {
       const response = await fetch(
-        `http://localhost:5000/profile/${user.username}`
+        `/profile/${user.username}`
       );
 
       if (response.ok) {
@@ -89,7 +89,7 @@ async function loadProfile() {
 
 function setFallbackValues(user) {
   console.log("Using fallback values from localStorage");
-  
+
   // mail → Email
   const mail = user.mail || user.email || "--";
   document.getElementById("displayEmail").textContent = mail;

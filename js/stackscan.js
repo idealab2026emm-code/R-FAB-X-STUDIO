@@ -2,7 +2,7 @@ async function getDetails() {
   const code = document.getElementById("item_code").value;
   const result = document.getElementById("result");
 
-  const res = await fetch(`http://localhost:5000/materials/${code}`);
+  const res = await fetch(`/materials/${code}`);
 
   if (!res.ok) {
     result.innerHTML = "<p style='color:red;'>Material Not Found</p>";

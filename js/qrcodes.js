@@ -23,7 +23,7 @@ async function loadMaterials() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-        const response = await fetch('http://localhost:5000/materials', { signal: controller.signal });
+        const response = await fetch('/materials', { signal: controller.signal });
         clearTimeout(timeoutId);
 
         if (!response.ok) throw new Error(`Server returned ${response.status} ${response.statusText}`);
