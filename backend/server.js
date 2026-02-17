@@ -1114,6 +1114,19 @@ app.post("/checkin", async (req, res) => {
 });
 
 // ============================================
+// GET ALL TRANSACTIONS
+// ============================================
+app.get("/transactions", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM transactions ORDER BY scan_time DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error fetching transactions:", err);
+    res.status(500).json({ message: "Error fetching transactions" });
+  }
+});
+
+// ============================================
 // PROFILE
 // ============================================
 app.get("/profile/:username", async (req, res) => {
