@@ -3,6 +3,31 @@ const cors = require("cors");
 const pool = require("./db");
 const ExcelJS = require("exceljs");
 
+const app = express();
+
+// Middleware
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+app.use(express.json());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`📍 ${req.method} ${req.path}`);
+  next();
+});
+
+// Serve static files from the React frontend app (or plain HTML/CSS/JS in parent dir)
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../html/login.html"));
+});
+
 // ============================================
 // DATABASE CONNECTION & AUTO-MIGRATION
 // ============================================
