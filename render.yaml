@@ -1,15 +1,15 @@
 services:
   - type: web
-    name: lab-material-system
+    name: R-FAB-X-STUDIO
     env: node
     plan: free
     buildCommand: cd backend && npm install
     startCommand: cd backend && node server.js
     envVars:
+      - key: PORT
+        value: 10000
       - key: DATABASE_URL
-        fromDatabase:
-          name: lab-material-db
-          property: connectionString
+        value: postgresql://r_fab_x_studio_user:Mab2KFsW7vOTyHCJCBEGjiuzSU5AVpkG@dpg-d6a7dbgboq4c73dsqde0-a/r_fab_x_studio
       - key: NODE_ENV
         value: production
     autoDeploy: false

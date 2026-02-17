@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS users (
     mail VARCHAR(200),
     department VARCHAR(100),
     rollno VARCHAR(50),
-    total_time INTERVAL,
     role VARCHAR(20) DEFAULT 'user'
 );
 
@@ -33,11 +32,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     action VARCHAR(20) NOT NULL,
     scan_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO users (username,password,fullname,email,location,role)
-VALUES
-('admin','admin123','Admin','admin@gmail.com','Lab Office','admin'),
-('user01','user123','User One','user01@gmail.com','ECE Lab','user');
 
 INSERT INTO materials (material_name,material_code,total_quantity,available_quantity) 
 VALUES
