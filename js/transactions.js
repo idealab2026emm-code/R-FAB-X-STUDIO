@@ -34,8 +34,8 @@ async function loadTransactions() {
   console.log('📥 Loading all transactions...');
 
   try {
-    console.log('🌐 Fetching: http://localhost:5000/transactions');
-    const res = await fetch('http://localhost:5000/transactions');
+    console.log('🌐 Fetching: /transactions');
+    const res = await fetch('/transactions');
 
     console.log('📍 Response status:', res.status);
 
