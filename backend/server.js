@@ -31,8 +31,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  console.log("Serving login.html for root /");
-  res.sendFile(path.join(__dirname, "../html/login.html"));
+  console.log("Serving root /, redirecting to /html/login.html");
+  res.redirect("/html/login.html");
 });
 
 // Handle GET /login explicitly (redirect to root)

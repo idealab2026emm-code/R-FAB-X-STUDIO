@@ -15,8 +15,8 @@ services:
     autoDeploy: false
 
 databases:
-  - name: lab-material-db
+  - name: R-FAB X-STUDIO
     plan: free
-    databaseName: lab_material_db
-    user: lab_admin
+    databaseName: r_fab_x_studio
+    user: admin 
 
