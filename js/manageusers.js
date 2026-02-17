@@ -42,7 +42,7 @@ function goBack() {
 async function loadAllUsers() {
   console.log("📋 Loading all users from database...");
   try {
-    const response = await fetch("http://localhost:5000/users");
+    const response = await fetch("/users");
 
     console.log("Response status:", response.status);
     console.log("Response type:", response.headers.get("content-type"));
@@ -388,10 +388,8 @@ async function saveUserChanges() {
     };
 
     console.log("📤 Sending PUT request");
-    console.log("URL: http://localhost:5000/admin/users/" + oldUsername);
-    console.log("Body:", JSON.stringify(requestBody, null, 2));
-
-    const response = await fetch(`http://localhost:5000/admin/users/${oldUsername}`, {
+    console.log("URL: /admin/users/" + oldUsername);
+    const response = await fetch(`/admin/users/${oldUsername}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -468,8 +466,8 @@ async function deleteUser(username) {
 
   try {
     console.log("🗑️ Sending DELETE request for user:", username);
-
-    const response = await fetch(`http://localhost:5000/admin/users/${username}`, {
+    // For now, we reuse the update endpoint since it handles password updates
+    const response = await fetch(`/admin/users/${username}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
