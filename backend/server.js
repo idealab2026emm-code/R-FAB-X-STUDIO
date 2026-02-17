@@ -1206,6 +1206,23 @@ app.get("/test-users-table", async (req, res) => {
   }
 });
 
+// Test transactions table
+app.get("/test-transactions", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT COUNT(*) as count FROM transactions");
+    const count = result.rows[0].count;
+    res.json({
+      status: "Transactions table accessible",
+      count: count
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "Transactions table error",
+      error: err.message
+    });
+  }
+});
+
 // ============================================
 // ADMIN - MANAGE USERS (FIXED VERSION)
 // ============================================
