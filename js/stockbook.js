@@ -99,7 +99,7 @@ async function loadMaterials() {
   const stockTable = document.getElementById("stockTable");
 
   try {
-    const response = await fetch("http://localhost:5000/materials");
+    const response = await fetch("/materials");
 
     if (!response.ok) {
       stockTable.innerHTML = `
@@ -348,7 +348,7 @@ function saveMaterialData(event) {
 
 async function updateMaterialOnServer(data) {
   try {
-    const response = await fetch(`http://localhost:5000/materials/${data.id}`, {
+    const response = await fetch(`/materials/${data.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -406,7 +406,7 @@ function deleteMaterial() {
 
 async function deleteMaterialOnServer(id) {
   try {
-    const response = await fetch(`http://localhost:5000/materials/${id}`, {
+    const response = await fetch(`/materials/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

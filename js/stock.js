@@ -23,10 +23,10 @@ function initializePage() {
 
   // Load all materials on page load
   loadAllMaterials();
-  
+
   // Load and display all stock
   loadStock();
-  
+
   // Setup search event listener
   setupSearch();
 }
@@ -37,7 +37,7 @@ function initializePage() {
 
 async function loadAllMaterials() {
   try {
-    const response = await fetch(`http://localhost:5000/materials`);
+    const response = await fetch(`/materials`);
     if (response.ok) {
       allMaterialsCache = await response.json();
       console.log(`✓ Loaded ${allMaterialsCache.length} materials for search`);
@@ -54,16 +54,16 @@ async function loadAllMaterials() {
 
 function setupSearch() {
   const searchInput = document.getElementById("material_code");
-  
+
   searchInput.addEventListener("input", function () {
     const query = this.value.trim();
-    
+
     if (query.length === 0) {
       // Show all if search is empty
       loadStock();
       return;
     }
-    
+
     // Search as you type
     performSearch(query);
   });
@@ -82,7 +82,7 @@ async function performSearch(query) {
 
     // SEARCH BY CODE (Exact Match)
     try {
-      const codeResponse = await fetch(`http://localhost:5000/materials/${encodeURIComponent(query)}`);
+      const codeResponse = await fetch(`/materials/${encodeURIComponent(query)}`);
       if (codeResponse.ok) {
         const material = await codeResponse.json();
         results.push({
@@ -100,17 +100,17 @@ async function performSearch(query) {
         // Get field values with fallbacks
         const materialName = mat.material_name || mat.item_name || '';
         const materialCode = mat.material_code || mat.item_code || '';
-        
+
         const nameMatch = materialName.toLowerCase().includes(query.toLowerCase());
         const codeMatch = materialCode.toLowerCase().includes(query.toLowerCase());
-        
+
         // Exclude exact code matches to avoid duplicates
         const isExactCodeMatch = results.some(r => {
           const rCode = r.material_code || r.item_code || '';
           const matCode = mat.material_code || mat.item_code || '';
           return rCode === matCode;
         });
-        
+
         return (nameMatch || codeMatch) && !isExactCodeMatch;
       });
 
@@ -159,7 +159,7 @@ async function loadStock() {
   statusMessage.classList.remove("success");
 
   try {
-    const response = await fetch("http://localhost:5000/materials");
+    const response = await fetch("/materials");
 
     if (!response.ok) {
       showStatus("Unable to load stock", "error");
@@ -233,14 +233,14 @@ function displayTable(data) {
       </thead>
       <tbody>
         ${data
-          .map((item) => {
-            // Get field values with fallbacks for different database column names
-            const materialCode = item.material_code || item.item_code || '-';
-            const materialName = item.material_name || item.item_name || '-';
-            const totalQty = item.total_qty || item.balance || 0;
-            const availableQty = item.available_qty || item.available_quantity || 0;
-            
-            return `
+      .map((item) => {
+        // Get field values with fallbacks for different database column names
+        const materialCode = item.material_code || item.item_code || '-';
+        const materialName = item.material_name || item.item_name || '-';
+        const totalQty = item.total_qty || item.balance || 0;
+        const availableQty = item.available_qty || item.available_quantity || 0;
+
+        return `
           <tr>
             <td>
               <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="copyToClipboard('${materialCode}', this)" title="Click to copy">
@@ -260,8 +260,8 @@ function displayTable(data) {
             </td>
           </tr>
         `;
-          })
-          .join("")}
+      })
+      .join("")}
       </tbody>
     </table>
   `;
@@ -278,12 +278,12 @@ function copyToClipboard(text, element) {
   navigator.clipboard.writeText(text).then(() => {
     // Show feedback
     const icon = element.querySelector('i');
-    
+
     // Change icon to checkmark
     icon.classList.remove('fa-copy');
     icon.classList.add('fa-check');
     element.style.color = '#10b981';
-    
+
     // Show tooltip
     const tooltip = document.createElement('div');
     tooltip.style.cssText = `
@@ -304,7 +304,7 @@ function copyToClipboard(text, element) {
     tooltip.textContent = 'Copied!';
     element.parentElement.style.position = 'relative';
     element.parentElement.appendChild(tooltip);
-    
+
     // Revert after 2 seconds
     setTimeout(() => {
       icon.classList.add('fa-copy');
@@ -312,7 +312,7 @@ function copyToClipboard(text, element) {
       element.style.color = '';
       tooltip.remove();
     }, 2000);
-    
+
     console.log(`✓ Copied: ${text}`);
   }).catch(err => {
     console.error('Failed to copy:', err);
