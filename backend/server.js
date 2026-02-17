@@ -24,8 +24,20 @@ app.use((req, res, next) => {
 const path = require("path");
 app.use(express.static(path.join(__dirname, "../")));
 
+// Debug logging to see what paths are requested
+app.use((req, res, next) => {
+  console.log(`DEBUG: Request for ${req.method} ${req.path}`);
+  next();
+});
+
 app.get("/", (req, res) => {
+  console.log("Serving login.html for root /");
   res.sendFile(path.join(__dirname, "../html/login.html"));
+});
+
+// Handle GET /login explicitly (redirect to root)
+app.get("/login", (req, res) => {
+  res.redirect("/");
 });
 
 // ============================================
