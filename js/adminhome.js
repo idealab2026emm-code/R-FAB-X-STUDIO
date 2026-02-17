@@ -37,7 +37,7 @@ async function loadStats() {
 
   try {
     console.log('📥 Fetching materials...');
-    const mat = await fetch('http://localhost:5000/materials');
+    const mat = await fetch('/materials');
     if (mat.ok) {
       const data = await mat.json();
       document.getElementById('totalMat').textContent = data.length;
@@ -50,7 +50,7 @@ async function loadStats() {
 
   try {
     console.log('📥 Fetching users...');
-    const users = await fetch('http://localhost:5000/users');
+    const users = await fetch('/users');
     if (users.ok) {
       const data = await users.json();
       document.getElementById('totalUsers').textContent = data.length;
@@ -420,7 +420,7 @@ async function uploadUsersData() {
       };
     });
 
-    const response = await fetch('http://localhost:5000/upload-users', {
+    const response = await fetch('/upload-users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ users })
@@ -588,7 +588,7 @@ async function uploadMaterialsData() {
       return;
     }
 
-    const response = await fetch('http://localhost:5000/upload-materials', {
+    const response = await fetch('/upload-materials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ materials })
