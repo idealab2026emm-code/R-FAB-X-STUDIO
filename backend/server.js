@@ -1554,6 +1554,18 @@ async function runMigrations() {
       console.log("  ✓ Column exists: transactions.quantity");
     }
 
+    // Check and add scan_time column to transactions table if missing
+    const timeCheck = await pool.query(`
+      SELECT column_name FROM information_schema.columns 
+      WHERE table_name = 'transactions' AND column_name = 'scan_time'
+    `);
+    if (timeCheck.rows.length === 0) {
+      await pool.query("ALTER TABLE transactions ADD COLUMN scan_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+      console.log("  ✅ Added missing column: transactions.scan_time");
+    } else {
+      console.log("  ✓ Column exists: transactions.scan_time");
+    }
+
     // ============================================
     // AUTO-SEED ADMIN USER
     // ============================================
