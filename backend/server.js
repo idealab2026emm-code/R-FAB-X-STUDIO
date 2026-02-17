@@ -1541,15 +1541,10 @@ async function runMigrations() {
       console.log("  ✓ Column exists: transactions.quantity");
     }
 
-    console.log("  ✓ Column exists: transactions.quantity");
-  }
-
     // ============================================
     // AUTO-SEED ADMIN USER
     // ============================================
     const adminCheck = await pool.query("SELECT * FROM users WHERE username = 'admin'");
-  if (adminCheck.rows.length === 0) {
-    console.log("👤 Admin user not found. Creating default admin...");
     await pool.query(`
         INSERT INTO users (username, password, fullname, mail, rollno, department, role)
         VALUES ('admin', 'admin123', 'System Admin', 'admin@rathinam.in', 'ADMIN001', 'OFFICE', 'admin')
