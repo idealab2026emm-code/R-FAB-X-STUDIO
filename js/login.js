@@ -4,8 +4,8 @@
 // ============================================
 
 // Wait for DOM to load
-document.addEventListener("DOMContentLoaded", function() {
-  
+document.addEventListener("DOMContentLoaded", function () {
+
   // DOM Elements
   const loginForm = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
@@ -30,12 +30,12 @@ document.addEventListener("DOMContentLoaded", function() {
     e.preventDefault();
     const isPassword = passwordInput.type === "password";
     passwordInput.type = isPassword ? "text" : "password";
-    
+
     const icon = togglePasswordBtn.querySelector("i");
     if (icon) {
       icon.className = isPassword ? "fas fa-eye-slash" : "fas fa-eye";
     }
-    
+
     console.log(isPassword ? "👁️ Password visible" : "🔒 Password hidden");
   });
 
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
   async function performLogin(email, password) {
     console.log("\n📤 Sending login request...");
     console.log("   Email (mail column):", email);
-    console.log("   Server: http://localhost:5000/login");
+    console.log("   Server: Relative Path (/login)");
 
     const loginButton = loginForm.querySelector(".login-button");
     const buttonText = loginButton.querySelector(".button-text");
@@ -114,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
       console.log("📋 Request body:", JSON.stringify(requestBody, null, 2));
 
-      const response = await fetch("http://localhost:5000/login", {
+      // Use relative path for production compatibility
+      const response = await fetch("/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -161,20 +162,20 @@ document.addEventListener("DOMContentLoaded", function() {
         showStatus("✗ Invalid email or password", "error");
         passwordInput.value = "";
         passwordInput.focus();
-        
+
       } else if (response.status === 400) {
         const errorData = await response.json().catch(() => ({}));
         console.log("❌ Bad request:", errorData.message);
         showStatus("✗ " + (errorData.message || "Invalid request"), "error");
-        
+
       } else if (response.status === 429) {
         console.log("❌ Too many login attempts");
         showStatus("✗ Too many login attempts. Please try again later", "error");
-        
+
       } else if (response.status === 500) {
         console.log("❌ Server error: 500");
         showStatus("✗ Server error. Please try again later", "error");
-        
+
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.log("❌ Login failed - Status:", response.status);
@@ -186,14 +187,14 @@ document.addEventListener("DOMContentLoaded", function() {
       console.error("❌ Network/Fetch Error:", error);
       console.error("   Error Type:", error.name);
       console.error("   Error Message:", error.message);
-      
+
       if (error.message.includes("fetch") || error.message.includes("Failed to fetch")) {
         showStatus("✗ Cannot connect to server. Is it running?", "error");
         console.error("   → Check if server is running on http://localhost:5000");
       } else {
         showStatus("✗ An error occurred. Please try again", "error");
       }
-      
+
     } finally {
       loginButton.disabled = false;
       buttonText.textContent = originalText;
