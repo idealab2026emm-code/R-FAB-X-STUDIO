@@ -3,6 +3,7 @@ const cors = require("cors");
 const pool = require("./db");
 const ExcelJS = require("exceljs");
 const nodemailer = require("nodemailer");
+const fs = require('fs');
 
 const app = express();
 
@@ -331,6 +332,15 @@ app.post("/api/send-otp", async (req, res) => {
 
   } catch (err) {
     console.error("❌ Send OTP error:", err);
+    // Log error to file
+    const logMessage = `[${new Date().toISOString()}] OTP Error: ${err.message}\n${err.stack}\n\n`;
+    try {
+      fs.appendFileSync('backend/email_error.log', logMessage);
+      console.log("📝 Error logged to backend/email_error.log");
+    } catch (e) {
+      console.error("Failed to write to log file:", e);
+    }
+
     res.status(500).json({ error: "Failed to send OTP. Please try again." });
   }
 });
