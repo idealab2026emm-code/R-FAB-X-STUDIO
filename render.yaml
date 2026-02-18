@@ -12,6 +12,10 @@ services:
         value: postgresql://r_fab_x_studio_user:Mab2KFsW7vOTyHCJCBEGjiuzSU5AVpkG@dpg-d6a7dbgboq4c73dsqde0-a/r_fab_x_studio
       - key: NODE_ENV
         value: production
+      - key: SMTP_EMAIL
+        value: idealab2026emm@gmail.com
+      - key: SMTP_PASSWORD
+        value: Nila@3030
     autoDeploy: false
 
 databases:

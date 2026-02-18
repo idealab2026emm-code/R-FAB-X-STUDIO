@@ -133,7 +133,7 @@
                 </div>
 
                 <!-- Sign Up Button -->
-                <button type="submit" class="signup-button">
+                <button type="submit" class="signup-button" id="signupBtn">
                     <span class="button-text">Create Account</span>
                     <span class="button-icon">
                         <i class="fas fa-arrow-right"></i>
@@ -149,6 +149,50 @@
                     <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
                 </div>
             </form>
+
+            <!-- OTP Verification Section (Hidden by default) -->
+            <div class="otp-section" id="otpSection" style="display: none;">
+                <div class="otp-header">
+                    <button type="button" class="back-button" id="backToForm" aria-label="Go back to form">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h2>Verify Your Email</h2>
+                        <p class="otp-subtitle">We've sent a 6-digit OTP to</p>
+                        <p class="otp-email" id="otpEmailDisplay"></p>
+                    </div>
+                </div>
+
+                <div class="otp-icon-wrapper">
+                    <i class="fas fa-envelope-open-text otp-main-icon"></i>
+                </div>
+
+                <div class="otp-input-group">
+                    <input type="text" id="otpInput1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                    <input type="text" id="otpInput2" class="otp-input" maxlength="1" inputmode="numeric" />
+                    <input type="text" id="otpInput3" class="otp-input" maxlength="1" inputmode="numeric" />
+                    <input type="text" id="otpInput4" class="otp-input" maxlength="1" inputmode="numeric" />
+                    <input type="text" id="otpInput5" class="otp-input" maxlength="1" inputmode="numeric" />
+                    <input type="text" id="otpInput6" class="otp-input" maxlength="1" inputmode="numeric" />
+                </div>
+
+                <button type="button" class="signup-button verify-btn" id="verifyOtpBtn">
+                    <span class="button-text">Verify & Create Account</span>
+                    <span class="button-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </span>
+                    <div class="button-glow"></div>
+                </button>
+
+                <div id="otpStatusMessage" class="status-message" role="alert"></div>
+
+                <div class="resend-section">
+                    <p id="resendTimer" class="resend-timer">Resend OTP in <span id="countdown">60</span>s</p>
+                    <button type="button" class="resend-button" id="resendOtpBtn" style="display: none;">
+                        <i class="fas fa-redo"></i> Resend OTP
+                    </button>
+                </div>
+            </div>
         </div>
     </main>
 

@@ -375,6 +375,157 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* ==================== OTP VERIFICATION SECTION ==================== */
+.otp-section {
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+}
+
+.otp-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.otp-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+}
+
+.otp-subtitle {
+    color: var(--text-light);
+    font-size: 14px;
+    margin: 0;
+}
+
+.otp-email {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+    margin: 4px 0 0 0;
+}
+
+.back-button {
+    background: none;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.back-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(0, 102, 255, 0.05);
+}
+
+.otp-icon-wrapper {
+    margin: 20px 0 30px;
+}
+
+.otp-main-icon {
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.otp-input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.otp-input {
+    width: 50px;
+    height: 58px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--dark);
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
+    background: rgba(0, 102, 255, 0.02);
+}
+
+.verify-btn {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.resend-section {
+    margin-top: 20px;
+}
+
+.resend-timer {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.resend-timer span {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.resend-button {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.resend-button:hover {
+    background: rgba(0, 102, 255, 0.08);
+}
+
+.resend-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .signup-card {
@@ -389,6 +540,16 @@ body {
     .form-row {
         grid-template-columns: 1fr;
         gap: 24px;
+    }
+
+    .otp-input {
+        width: 44px;
+        height: 52px;
+        font-size: 20px;
+    }
+
+    .otp-input-group {
+        gap: 8px;
     }
 }
 
@@ -407,5 +568,19 @@ body {
 
     .subtitle {
         font-size: 13px;
+    }
+
+    .otp-input {
+        width: 40px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    .otp-input-group {
+        gap: 6px;
+    }
+
+    .otp-header h2 {
+        font-size: 20px;
     }
 }
