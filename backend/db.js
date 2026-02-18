@@ -15,7 +15,8 @@ if (process.env.DATABASE_URL) {
     password: process.env.DB_PASSWORD || "password",
     host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || "rfab_x_studio"
+    database: process.env.DB_NAME || "rfab_x_studio",
+    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false
   };
 }
 
