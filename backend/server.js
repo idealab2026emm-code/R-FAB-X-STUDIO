@@ -423,19 +423,6 @@ app.post("/api/signup", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check if email was verified via OTP (from database)
-    const verifyCheck = await pool.query(
-      "SELECT * FROM otp_verifications WHERE email=$1 AND is_verified=true ORDER BY created_at DESC LIMIT 1",
-      [email]
-    );
-
-    if (verifyCheck.rows.length === 0) {
-      console.log(`❌ Email not verified: ${email}`);
-      return res.status(400).json({ error: "Email not verified. Please verify your college email first." });
-    }
-
-    console.log("✓ Email verified via OTP (confirmed from DB)");
-
     // Check if username already exists
     const existingUsername = await pool.query(
       "SELECT * FROM users WHERE username=$1",
@@ -460,16 +447,13 @@ app.post("/api/signup", async (req, res) => {
 
     console.log("✓ Username and email available");
 
-    // Insert new user with is_verified=true (email already verified via OTP)
+    // Insert new user with is_verified=true (No OTP required)
     const result = await pool.query(
       "INSERT INTO users (username, password, fullname, mail, rollno, department, is_verified) VALUES ($1,$2,$3,$4,$5,$6,true) RETURNING id, username, fullname, mail, rollno, department, is_verified",
       [username, password, fullname, email, rollno, department]
     );
 
-    // Clean up OTP verification record
-    await pool.query("DELETE FROM otp_verifications WHERE email=$1", [email]);
-
-    console.log(`✅ User created successfully (verified): ${username}`);
+    console.log(`✅ User created successfully: ${username}`);
     res.status(201).json({
       message: "Account created successfully",
       user: result.rows[0]

@@ -22,120 +22,11 @@
                 <p class="subtitle">Join R-FAB X-STUDIO Lab Management System</p>
             </div>
 
-            <!-- Step Progress Indicator -->
-            <div class="step-indicator">
-                <div class="step active" id="stepIndicator1">
-                    <div class="step-circle">1</div>
-                    <span class="step-label">Email</span>
-                </div>
-                <div class="step-line" id="stepLine1"></div>
-                <div class="step" id="stepIndicator2">
-                    <div class="step-circle">2</div>
-                    <span class="step-label">Verify</span>
-                </div>
-                <div class="step-line" id="stepLine2"></div>
-                <div class="step" id="stepIndicator3">
-                    <div class="step-circle">3</div>
-                    <span class="step-label">Details</span>
-                </div>
-            </div>
-
-            <!-- ==================== STEP 1: EMAIL ENTRY ==================== -->
-            <div class="step-section" id="step1Section">
+            <!-- Single Registration Form -->
+            <div class="step-section" id="signupSection" style="display: block;">
                 <div class="step-content">
-                    <div class="step-icon-wrapper">
-                        <i class="fas fa-envelope step-main-icon"></i>
-                    </div>
-                    <h2 class="step-title">Enter Your College Email</h2>
-                    <p class="step-description">We'll send a verification OTP to your @rathinam.in email</p>
-
-                    <div class="form-group">
-                        <label for="email" class="form-label">
-                            <span class="label-text">College Email Address</span>
-                            <span class="label-required">*</span>
-                        </label>
-                        <div class="input-wrapper">
-                            <i class="input-icon fas fa-envelope"></i>
-                            <input type="email" id="email" class="form-input" placeholder="yourname@rathinam.in"
-                                required autocomplete="email" />
-                            <div class="input-focus-line"></div>
-                        </div>
-                        <small class="input-hint">Must be a valid @rathinam.in college email address</small>
-                    </div>
-
-                    <button type="button" class="signup-button" id="sendOtpBtn">
-                        <span class="button-text">Send Verification OTP</span>
-                        <span class="button-icon">
-                            <i class="fas fa-paper-plane"></i>
-                        </span>
-                        <div class="button-glow"></div>
-                    </button>
-
-                    <div id="step1StatusMessage" class="status-message" role="alert"></div>
-
-                    <div class="form-footer">
-                        <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== STEP 2: OTP VERIFICATION ==================== -->
-            <div class="step-section" id="step2Section" style="display: none;">
-                <div class="otp-header">
-                    <button type="button" class="back-button" id="backToStep1" aria-label="Go back to email">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <div>
-                        <h2>Verify Your Email</h2>
-                        <p class="otp-subtitle">We've sent a 6-digit OTP to</p>
-                        <p class="otp-email" id="otpEmailDisplay"></p>
-                    </div>
-                </div>
-
-                <div class="otp-icon-wrapper">
-                    <i class="fas fa-envelope-open-text otp-main-icon"></i>
-                </div>
-
-                <div class="otp-input-group">
-                    <input type="text" id="otpInput1" class="otp-input" maxlength="1" inputmode="numeric"
-                        autocomplete="one-time-code" />
-                    <input type="text" id="otpInput2" class="otp-input" maxlength="1" inputmode="numeric" />
-                    <input type="text" id="otpInput3" class="otp-input" maxlength="1" inputmode="numeric" />
-                    <input type="text" id="otpInput4" class="otp-input" maxlength="1" inputmode="numeric" />
-                    <input type="text" id="otpInput5" class="otp-input" maxlength="1" inputmode="numeric" />
-                    <input type="text" id="otpInput6" class="otp-input" maxlength="1" inputmode="numeric" />
-                </div>
-
-                <button type="button" class="signup-button verify-btn" id="verifyOtpBtn">
-                    <span class="button-text">Verify Email</span>
-                    <span class="button-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </span>
-                    <div class="button-glow"></div>
-                </button>
-
-                <div id="otpStatusMessage" class="status-message" role="alert"></div>
-
-                <div class="resend-section">
-                    <p id="resendTimer" class="resend-timer">Resend OTP in <span id="countdown">60</span>s</p>
-                    <button type="button" class="resend-button" id="resendOtpBtn" style="display: none;">
-                        <i class="fas fa-redo"></i> Resend OTP
-                    </button>
-                </div>
-            </div>
-
-            <!-- ==================== STEP 3: REGISTRATION DETAILS ==================== -->
-            <div class="step-section" id="step3Section" style="display: none;">
-                <div class="step-content">
-                    <div class="verified-badge">
-                        <i class="fas fa-check-circle"></i>
-                        <span id="verifiedEmailText"></span>
-                    </div>
-
-                    <h2 class="step-title">Complete Your Profile</h2>
-                    <p class="step-description">Your email is verified! Now fill in your details</p>
-
                     <form class="signup-form" id="signupForm">
+
                         <!-- Full Name -->
                         <div class="form-group">
                             <label for="fullname" class="form-label">
@@ -144,8 +35,8 @@
                             </label>
                             <div class="input-wrapper">
                                 <i class="input-icon fas fa-user"></i>
-                                <input type="text" id="fullname" class="form-input"
-                                    placeholder="Enter your full name" required autocomplete="name" />
+                                <input type="text" id="fullname" class="form-input" placeholder="Enter your full name"
+                                    required autocomplete="name" />
                                 <div class="input-focus-line"></div>
                             </div>
                         </div>
@@ -162,6 +53,21 @@
                                     required autocomplete="username" />
                                 <div class="input-focus-line"></div>
                             </div>
+                        </div>
+
+                        <!-- Email Address (Moved here) -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <span class="label-text">College Email Address</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="input-icon fas fa-envelope"></i>
+                                <input type="email" id="email" class="form-input" placeholder="yourname@rathinam.in"
+                                    required autocomplete="email" />
+                                <div class="input-focus-line"></div>
+                            </div>
+                            <small class="input-hint">Must be a valid @rathinam.in college email address</small>
                         </div>
 
                         <!-- Roll Number and Department (Side by Side) -->
@@ -186,8 +92,8 @@
                                 </label>
                                 <div class="input-wrapper">
                                     <i class="input-icon fas fa-building"></i>
-                                    <input type="text" id="department" class="form-input"
-                                        placeholder="e.g., CSE(AIML)" required />
+                                    <input type="text" id="department" class="form-input" placeholder="e.g., CSE(AIML)"
+                                        required />
                                     <div class="input-focus-line"></div>
                                 </div>
                             </div>
@@ -240,6 +146,10 @@
 
                         <!-- Status Message -->
                         <div id="statusMessage" class="status-message" role="alert"></div>
+
+                        <div class="form-footer">
+                            <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
+                        </div>
                     </form>
                 </div>
             </div>
