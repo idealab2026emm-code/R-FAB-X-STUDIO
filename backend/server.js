@@ -20,12 +20,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// In-memory OTP store: email -> { otp, expiry }
-const otpStore = new Map();
-
-// In-memory verified emails store: email -> { verifiedAt }
-// Emails here have been verified via OTP and can proceed to signup
-const verifiedEmails = new Map();
 
 // Middleware
 app.use(cors({
@@ -78,6 +72,16 @@ const createTablesQuery = `
     mail VARCHAR(100) UNIQUE NOT NULL,
     rollno VARCHAR(20) NOT NULL,
     department VARCHAR(50) NOT NULL,
+    is_verified BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS otp_verifications (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    otp_code VARCHAR(10) NOT NULL,
+    otp_expiry TIMESTAMP NOT NULL,
+    is_verified BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -118,6 +122,13 @@ const createTablesQuery = `
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
+
+  -- Add is_verified to existing users table if missing
+  DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='is_verified') THEN
+      ALTER TABLE users ADD COLUMN is_verified BOOLEAN DEFAULT false;
+    END IF;
+  END $$;
 `;
 
 // Initialize Database
@@ -197,6 +208,13 @@ app.post("/login", async (req, res) => {
     }
 
     const user = userQuery.rows[0];
+
+    // Block unverified users from logging in
+    if (user.is_verified === false) {
+      console.log(`❌ User not verified: ${user.username}`);
+      return res.status(403).json({ message: "Please verify your email first before logging in" });
+    }
+
     console.log(`✅ Login successful for: ${user.username}`);
     res.json(user);
   } catch (err) {
@@ -240,6 +258,7 @@ app.post("/register", async (req, res) => {
 // ============================================
 // SEND OTP - EMAIL VERIFICATION FOR SIGNUP
 // Only requires email (college mail @rathinam.in)
+// Stores OTP in database (otp_verifications table)
 // ============================================
 app.post("/api/send-otp", async (req, res) => {
   console.log("\n========== POST /api/send-otp ==========");
@@ -270,12 +289,18 @@ app.post("/api/send-otp", async (req, res) => {
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-    // Store OTP (email only, no user data needed)
-    otpStore.set(email, { otp, expiry });
+    // Delete any existing OTP for this email
+    await pool.query("DELETE FROM otp_verifications WHERE email=$1", [email]);
 
-    console.log(`🔑 OTP generated for ${email}: ${otp}`);
+    // Store OTP in database
+    await pool.query(
+      "INSERT INTO otp_verifications (email, otp_code, otp_expiry, is_verified) VALUES ($1, $2, $3, false)",
+      [email, otp, otpExpiry]
+    );
+
+    console.log(`🔑 OTP generated and stored in DB for ${email}: ${otp}`);
 
     // Send OTP via email
     const mailOptions = {
@@ -311,7 +336,7 @@ app.post("/api/send-otp", async (req, res) => {
 });
 
 // ============================================
-// VERIFY OTP - MARKS EMAIL AS VERIFIED
+// VERIFY OTP - MARKS EMAIL AS VERIFIED IN DB
 // Does NOT create account (that happens in /api/signup)
 // ============================================
 app.post("/api/verify-otp", async (req, res) => {
@@ -325,33 +350,39 @@ app.post("/api/verify-otp", async (req, res) => {
       return res.status(400).json({ error: "Email and OTP are required" });
     }
 
-    // Check if OTP exists
-    const stored = otpStore.get(email);
-    if (!stored) {
+    // Check OTP in database
+    const result = await pool.query(
+      "SELECT * FROM otp_verifications WHERE email=$1 ORDER BY created_at DESC LIMIT 1",
+      [email]
+    );
+
+    if (result.rows.length === 0) {
       console.log(`❌ No OTP found for: ${email}`);
-      return res.status(400).json({ error: "OTP expired or not found. Please request a new one." });
+      return res.status(400).json({ error: "OTP not found. Please request a new one." });
     }
 
+    const stored = result.rows[0];
+
     // Check expiry
-    if (Date.now() > stored.expiry) {
+    if (new Date(stored.otp_expiry) < new Date()) {
       console.log(`❌ OTP expired for: ${email}`);
-      otpStore.delete(email);
+      await pool.query("DELETE FROM otp_verifications WHERE email=$1", [email]);
       return res.status(400).json({ error: "OTP has expired. Please request a new one." });
     }
 
     // Verify OTP
-    if (stored.otp !== otp.trim()) {
+    if (stored.otp_code !== otp.trim()) {
       console.log(`❌ Invalid OTP for: ${email}`);
       return res.status(400).json({ error: "Invalid OTP. Please try again." });
     }
 
     console.log(`✅ OTP verified for: ${email}`);
 
-    // Clear OTP from store
-    otpStore.delete(email);
-
-    // Mark email as verified (valid for 15 minutes to complete signup)
-    verifiedEmails.set(email, { verifiedAt: Date.now() });
+    // Mark as verified in DB
+    await pool.query(
+      "UPDATE otp_verifications SET is_verified=true WHERE email=$1",
+      [email]
+    );
 
     res.status(200).json({
       message: "Email verified successfully! Please complete your registration.",
@@ -366,7 +397,7 @@ app.post("/api/verify-otp", async (req, res) => {
 });
 
 // ============================================
-// SIGNUP API - REQUIRES VERIFIED EMAIL
+// SIGNUP API - REQUIRES VERIFIED EMAIL (FROM DB)
 // Email must be verified via OTP before calling this
 // ============================================
 app.post("/api/signup", async (req, res) => {
@@ -382,21 +413,18 @@ app.post("/api/signup", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check if email was verified via OTP
-    const verified = verifiedEmails.get(email);
-    if (!verified) {
+    // Check if email was verified via OTP (from database)
+    const verifyCheck = await pool.query(
+      "SELECT * FROM otp_verifications WHERE email=$1 AND is_verified=true ORDER BY created_at DESC LIMIT 1",
+      [email]
+    );
+
+    if (verifyCheck.rows.length === 0) {
       console.log(`❌ Email not verified: ${email}`);
       return res.status(400).json({ error: "Email not verified. Please verify your college email first." });
     }
 
-    // Check if verification is still valid (15 min window)
-    if (Date.now() - verified.verifiedAt > 15 * 60 * 1000) {
-      console.log(`❌ Email verification expired for: ${email}`);
-      verifiedEmails.delete(email);
-      return res.status(400).json({ error: "Email verification expired. Please verify again." });
-    }
-
-    console.log("✓ Email verified via OTP");
+    console.log("✓ Email verified via OTP (confirmed from DB)");
 
     // Check if username already exists
     const existingUsername = await pool.query(
@@ -422,16 +450,16 @@ app.post("/api/signup", async (req, res) => {
 
     console.log("✓ Username and email available");
 
-    // Insert new user (using 'mail' column to match existing schema)
+    // Insert new user with is_verified=true (email already verified via OTP)
     const result = await pool.query(
-      "INSERT INTO users (username, password, fullname, mail, rollno, department) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, username, fullname, mail, rollno, department",
+      "INSERT INTO users (username, password, fullname, mail, rollno, department, is_verified) VALUES ($1,$2,$3,$4,$5,$6,true) RETURNING id, username, fullname, mail, rollno, department, is_verified",
       [username, password, fullname, email, rollno, department]
     );
 
-    // Clear verified email
-    verifiedEmails.delete(email);
+    // Clean up OTP verification record
+    await pool.query("DELETE FROM otp_verifications WHERE email=$1", [email]);
 
-    console.log(`✅ User created successfully: ${username}`);
+    console.log(`✅ User created successfully (verified): ${username}`);
     res.status(201).json({
       message: "Account created successfully",
       user: result.rows[0]
