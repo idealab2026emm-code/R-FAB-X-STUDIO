@@ -449,8 +449,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.08); opacity: 0.85; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 0.85;
+    }
 }
 
 .otp-input-group {
@@ -526,6 +535,165 @@ body {
     cursor: not-allowed;
 }
 
+/* ==================== STEP PROGRESS INDICATOR ==================== */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 36px;
+    padding: 0 20px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: white;
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.step.active .step-circle {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.step.completed .step-circle {
+    border-color: var(--success);
+    background: var(--success);
+    color: white;
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.step.active .step-label {
+    color: var(--primary);
+}
+
+.step.completed .step-label {
+    color: var(--success);
+}
+
+.step-line {
+    width: 60px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    margin: 0 8px;
+    margin-bottom: 24px;
+    transition: all 0.5s ease;
+}
+
+.step-line.active {
+    background: linear-gradient(90deg, var(--success), #48bb78);
+}
+
+/* ==================== STEP SECTIONS ==================== */
+.step-section {
+    animation: stepFadeIn 0.5s ease;
+}
+
+@keyframes stepFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-icon-wrapper {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.step-main-icon {
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.step-title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+.step-description {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 14px;
+    margin: -8px 0 8px;
+}
+
+/* ==================== VERIFIED BADGE ==================== */
+.verified-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(72, 187, 120, 0.05) 100%);
+    border: 1px solid rgba(72, 187, 120, 0.3);
+    border-radius: 12px;
+    animation: stepFadeIn 0.5s ease;
+}
+
+.verified-badge i {
+    color: var(--success);
+    font-size: 20px;
+}
+
+.verified-badge span {
+    color: #22543d;
+    font-weight: 600;
+    font-size: 14px;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .signup-card {
@@ -550,6 +718,20 @@ body {
 
     .otp-input-group {
         gap: 8px;
+    }
+
+    .step-line {
+        width: 40px;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .step-title {
+        font-size: 20px;
     }
 }
 
@@ -582,5 +764,35 @@ body {
 
     .otp-header h2 {
         font-size: 20px;
+    }
+
+    .step-line {
+        width: 30px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .step-label {
+        font-size: 10px;
+    }
+
+    .step-title {
+        font-size: 18px;
+    }
+
+    .step-main-icon {
+        font-size: 36px;
+    }
+
+    .verified-badge {
+        padding: 10px 14px;
+    }
+
+    .verified-badge span {
+        font-size: 12px;
     }
 }

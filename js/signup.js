@@ -1,22 +1,6 @@
-// ==================== PASSWORD TOGGLE ====================
-const togglePassword = document.getElementById('togglePassword');
-const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-const passwordInput = document.getElementById('password');
-const confirmPasswordInput = document.getElementById('confirmPassword');
-
-togglePassword.addEventListener('click', () => {
-    const type = passwordInput.type === 'password' ? 'text' : 'password';
-    passwordInput.type = type;
-    togglePassword.querySelector('i').classList.toggle('fa-eye');
-    togglePassword.querySelector('i').classList.toggle('fa-eye-slash');
-});
-
-toggleConfirmPassword.addEventListener('click', () => {
-    const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
-    confirmPasswordInput.type = type;
-    toggleConfirmPassword.querySelector('i').classList.toggle('fa-eye');
-    toggleConfirmPassword.querySelector('i').classList.toggle('fa-eye-slash');
-});
+// ==================== STATE ====================
+let currentEmail = '';
+let countdownInterval = null;
 
 // ==================== EMAIL VALIDATION ====================
 function validateEmail(email) {
@@ -25,87 +9,97 @@ function validateEmail(email) {
 }
 
 // ==================== SHOW MESSAGES ====================
-function showMessage(message, type) {
-    const statusMessage = document.getElementById('statusMessage');
-    statusMessage.textContent = message;
-    statusMessage.className = `status-message show ${type}`;
-    setTimeout(() => { statusMessage.classList.remove('show'); }, 5000);
+function showStepMessage(elementId, message, type) {
+    const el = document.getElementById(elementId);
+    el.textContent = message;
+    el.className = `status-message show ${type}`;
+    setTimeout(() => { el.classList.remove('show'); }, 5000);
 }
 
-function showOtpMessage(message, type) {
-    const otpStatus = document.getElementById('otpStatusMessage');
-    otpStatus.textContent = message;
-    otpStatus.className = `status-message show ${type}`;
-    setTimeout(() => { otpStatus.classList.remove('show'); }, 5000);
+// ==================== STEP INDICATOR ====================
+function setActiveStep(stepNum) {
+    // Update step circles
+    for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`stepIndicator${i}`);
+        indicator.classList.remove('active', 'completed');
+
+        if (i < stepNum) {
+            indicator.classList.add('completed');
+        } else if (i === stepNum) {
+            indicator.classList.add('active');
+        }
+    }
+
+    // Update step lines
+    for (let i = 1; i <= 2; i++) {
+        const line = document.getElementById(`stepLine${i}`);
+        if (i < stepNum) {
+            line.classList.add('active');
+        } else {
+            line.classList.remove('active');
+        }
+    }
 }
 
-// ==================== STATE ====================
-let currentEmail = '';
-let countdownInterval = null;
-
-// ==================== STEP 1: FORM SUBMIT → SEND OTP ====================
-document.getElementById('signupForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
+// ==================== STEP 1: SEND OTP ====================
+document.getElementById('sendOtpBtn').addEventListener('click', async () => {
     const email = document.getElementById('email').value.trim();
-    const fullname = document.getElementById('fullname').value.trim();
-    const username = document.getElementById('username').value.trim();
-    const rollno = document.getElementById('rollno').value.trim();
-    const department = document.getElementById('department').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
 
-    // Validate email domain
+    // Validate email
+    if (!email) {
+        showStepMessage('step1StatusMessage', 'Please enter your college email address', 'error');
+        return;
+    }
+
     if (!validateEmail(email)) {
-        showMessage('Email must be a valid @rathinam.in address', 'error');
+        showStepMessage('step1StatusMessage', 'Email must be a valid @rathinam.in college email', 'error');
         return;
     }
 
-    // Validate password match
-    if (password !== confirmPassword) {
-        showMessage('Passwords do not match', 'error');
-        return;
-    }
-
-    // Validate password strength
-    if (password.length < 6) {
-        showMessage('Password must be at least 6 characters long', 'error');
-        return;
-    }
-
-    const signupBtn = document.getElementById('signupBtn');
-    signupBtn.disabled = true;
-    signupBtn.querySelector('.button-text').textContent = 'Sending OTP...';
+    const sendBtn = document.getElementById('sendOtpBtn');
+    sendBtn.disabled = true;
+    sendBtn.querySelector('.button-text').textContent = 'Sending OTP...';
 
     try {
         const response = await fetch('/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, fullname, username, rollno, department, password })
+            body: JSON.stringify({ email })
         });
 
         const data = await response.json();
 
         if (response.ok) {
             currentEmail = email;
-            showOtpScreen(email);
+            showStep2(email);
         } else {
-            showMessage(data.error || 'Failed to send OTP. Please try again.', 'error');
+            showStepMessage('step1StatusMessage', data.error || 'Failed to send OTP. Please try again.', 'error');
         }
     } catch (error) {
         console.error('Send OTP error:', error);
-        showMessage('Network error. Please check your connection.', 'error');
+        showStepMessage('step1StatusMessage', 'Network error. Please check your connection.', 'error');
     } finally {
-        signupBtn.disabled = false;
-        signupBtn.querySelector('.button-text').textContent = 'Create Account';
+        sendBtn.disabled = false;
+        sendBtn.querySelector('.button-text').textContent = 'Send Verification OTP';
     }
 });
 
-// ==================== SHOW OTP SCREEN ====================
-function showOtpScreen(email) {
-    document.getElementById('signupForm').style.display = 'none';
-    document.getElementById('otpSection').style.display = 'block';
+// Allow Enter key on email input
+document.getElementById('email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('sendOtpBtn').click();
+    }
+});
+
+// ==================== SHOW STEP 2 (OTP SCREEN) ====================
+function showStep2(email) {
+    document.getElementById('step1Section').style.display = 'none';
+    document.getElementById('step2Section').style.display = 'block';
+    document.getElementById('step3Section').style.display = 'none';
     document.getElementById('otpEmailDisplay').textContent = email;
+
+    setActiveStep(2);
 
     // Clear OTP inputs
     for (let i = 1; i <= 6; i++) {
@@ -116,10 +110,12 @@ function showOtpScreen(email) {
     startCountdown();
 }
 
-// ==================== BACK TO FORM ====================
-document.getElementById('backToForm').addEventListener('click', () => {
-    document.getElementById('signupForm').style.display = 'flex';
-    document.getElementById('otpSection').style.display = 'none';
+// ==================== BACK TO STEP 1 ====================
+document.getElementById('backToStep1').addEventListener('click', () => {
+    document.getElementById('step1Section').style.display = 'block';
+    document.getElementById('step2Section').style.display = 'none';
+    document.getElementById('step3Section').style.display = 'none';
+    setActiveStep(1);
     if (countdownInterval) clearInterval(countdownInterval);
 });
 
@@ -155,12 +151,12 @@ otpInputs.forEach((input, index) => {
     });
 });
 
-// ==================== STEP 2: VERIFY OTP ====================
+// ==================== STEP 2: VERIFY OTP → GO TO STEP 3 ====================
 document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
     const otp = Array.from(otpInputs).map(i => i.value).join('');
 
     if (otp.length !== 6) {
-        showOtpMessage('Please enter the complete 6-digit OTP', 'error');
+        showStepMessage('otpStatusMessage', 'Please enter the complete 6-digit OTP', 'error');
         return;
     }
 
@@ -178,20 +174,116 @@ document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
         const data = await response.json();
 
         if (response.ok) {
-            showOtpMessage('Account created successfully! Redirecting...', 'success');
+            showStepMessage('otpStatusMessage', 'Email verified! Loading registration form...', 'success');
             if (countdownInterval) clearInterval(countdownInterval);
+
+            // Short delay then show Step 3
+            setTimeout(() => {
+                showStep3(currentEmail);
+            }, 1000);
+        } else {
+            showStepMessage('otpStatusMessage', data.error || 'Verification failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        showStepMessage('otpStatusMessage', 'Network error. Please try again.', 'error');
+    } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.querySelector('.button-text').textContent = 'Verify Email';
+    }
+});
+
+// ==================== SHOW STEP 3 (DETAILS FORM) ====================
+function showStep3(email) {
+    document.getElementById('step1Section').style.display = 'none';
+    document.getElementById('step2Section').style.display = 'none';
+    document.getElementById('step3Section').style.display = 'block';
+    document.getElementById('verifiedEmailText').textContent = email;
+
+    setActiveStep(3);
+
+    // Focus on the first field
+    document.getElementById('fullname').focus();
+}
+
+// ==================== PASSWORD TOGGLE ====================
+document.getElementById('togglePassword').addEventListener('click', () => {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+    document.getElementById('togglePassword').querySelector('i').classList.toggle('fa-eye');
+    document.getElementById('togglePassword').querySelector('i').classList.toggle('fa-eye-slash');
+});
+
+document.getElementById('toggleConfirmPassword').addEventListener('click', () => {
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+    confirmPasswordInput.type = type;
+    document.getElementById('toggleConfirmPassword').querySelector('i').classList.toggle('fa-eye');
+    document.getElementById('toggleConfirmPassword').querySelector('i').classList.toggle('fa-eye-slash');
+});
+
+// ==================== STEP 3: CREATE ACCOUNT ====================
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const rollno = document.getElementById('rollno').value.trim();
+    const department = document.getElementById('department').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Validate fields
+    if (!fullname || !username || !rollno || !department || !password) {
+        showStepMessage('statusMessage', 'All fields are required', 'error');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showStepMessage('statusMessage', 'Passwords do not match', 'error');
+        return;
+    }
+
+    if (password.length < 6) {
+        showStepMessage('statusMessage', 'Password must be at least 6 characters long', 'error');
+        return;
+    }
+
+    const signupBtn = document.getElementById('signupBtn');
+    signupBtn.disabled = true;
+    signupBtn.querySelector('.button-text').textContent = 'Creating Account...';
+
+    try {
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: currentEmail,
+                fullname,
+                username,
+                rollno,
+                department,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showStepMessage('statusMessage', 'Account created successfully! Redirecting to login...', 'success');
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 2000);
         } else {
-            showOtpMessage(data.error || 'Verification failed. Please try again.', 'error');
+            showStepMessage('statusMessage', data.error || 'Signup failed. Please try again.', 'error');
         }
     } catch (error) {
-        console.error('Verify OTP error:', error);
-        showOtpMessage('Network error. Please try again.', 'error');
+        console.error('Signup error:', error);
+        showStepMessage('statusMessage', 'Network error. Please try again.', 'error');
     } finally {
-        verifyBtn.disabled = false;
-        verifyBtn.querySelector('.button-text').textContent = 'Verify & Create Account';
+        signupBtn.disabled = false;
+        signupBtn.querySelector('.button-text').textContent = 'Create Account';
     }
 });
 
@@ -202,30 +294,22 @@ document.getElementById('resendOtpBtn').addEventListener('click', async () => {
     resendBtn.textContent = 'Sending...';
 
     try {
-        // Re-collect form data
-        const email = document.getElementById('email').value.trim();
-        const fullname = document.getElementById('fullname').value.trim();
-        const username = document.getElementById('username').value.trim();
-        const rollno = document.getElementById('rollno').value.trim();
-        const department = document.getElementById('department').value.trim();
-        const password = document.getElementById('password').value;
-
         const response = await fetch('/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, fullname, username, rollno, department, password })
+            body: JSON.stringify({ email: currentEmail })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            showOtpMessage('New OTP sent to your email!', 'success');
+            showStepMessage('otpStatusMessage', 'New OTP sent to your college email!', 'success');
             startCountdown();
         } else {
-            showOtpMessage(data.error || 'Failed to resend OTP.', 'error');
+            showStepMessage('otpStatusMessage', data.error || 'Failed to resend OTP.', 'error');
         }
     } catch (error) {
-        showOtpMessage('Network error. Please try again.', 'error');
+        showStepMessage('otpStatusMessage', 'Network error. Please try again.', 'error');
     } finally {
         resendBtn.disabled = false;
         resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
@@ -262,6 +346,6 @@ function startCountdown() {
 document.getElementById('email').addEventListener('blur', function () {
     const email = this.value.trim();
     if (email && !validateEmail(email)) {
-        showMessage('Email must end with @rathinam.in', 'error');
+        showStepMessage('step1StatusMessage', 'Email must end with @rathinam.in', 'error');
     }
 });

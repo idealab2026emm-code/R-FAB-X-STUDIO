@@ -22,138 +22,67 @@
                 <p class="subtitle">Join R-FAB X-STUDIO Lab Management System</p>
             </div>
 
-            <!-- Form Section -->
-            <form class="signup-form" id="signupForm">
-
-                <!-- Email Input (First - Most Important) -->
-                <div class="form-group">
-                    <label for="email" class="form-label">
-                        <span class="label-text">Email Address</span>
-                        <span class="label-required">*</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-envelope"></i>
-                        <input type="email" id="email" class="form-input" placeholder="yourname@rathinam.in" required
-                            autocomplete="email" />
-                        <div class="input-focus-line"></div>
-                    </div>
-                    <small class="input-hint">Must be a valid @rathinam.in email address</small>
+            <!-- Step Progress Indicator -->
+            <div class="step-indicator">
+                <div class="step active" id="stepIndicator1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Email</span>
                 </div>
-
-                <!-- Full Name -->
-                <div class="form-group">
-                    <label for="fullname" class="form-label">
-                        <span class="label-text">Full Name</span>
-                        <span class="label-required">*</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-user"></i>
-                        <input type="text" id="fullname" class="form-input" placeholder="Enter your full name" required
-                            autocomplete="name" />
-                        <div class="input-focus-line"></div>
-                    </div>
+                <div class="step-line" id="stepLine1"></div>
+                <div class="step" id="stepIndicator2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Verify</span>
                 </div>
-
-                <!-- Username -->
-                <div class="form-group">
-                    <label for="username" class="form-label">
-                        <span class="label-text">Username</span>
-                        <span class="label-required">*</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="input-icon fas fa-at"></i>
-                        <input type="text" id="username" class="form-input" placeholder="Choose a username" required
-                            autocomplete="username" />
-                        <div class="input-focus-line"></div>
-                    </div>
+                <div class="step-line" id="stepLine2"></div>
+                <div class="step" id="stepIndicator3">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Details</span>
                 </div>
+            </div>
 
-                <!-- Roll Number and Department (Side by Side) -->
-                <div class="form-row">
+            <!-- ==================== STEP 1: EMAIL ENTRY ==================== -->
+            <div class="step-section" id="step1Section">
+                <div class="step-content">
+                    <div class="step-icon-wrapper">
+                        <i class="fas fa-envelope step-main-icon"></i>
+                    </div>
+                    <h2 class="step-title">Enter Your College Email</h2>
+                    <p class="step-description">We'll send a verification OTP to your @rathinam.in email</p>
+
                     <div class="form-group">
-                        <label for="rollno" class="form-label">
-                            <span class="label-text">Roll Number</span>
+                        <label for="email" class="form-label">
+                            <span class="label-text">College Email Address</span>
                             <span class="label-required">*</span>
                         </label>
                         <div class="input-wrapper">
-                            <i class="input-icon fas fa-id-badge"></i>
-                            <input type="text" id="rollno" class="form-input" placeholder="e.g., 24110076" required />
+                            <i class="input-icon fas fa-envelope"></i>
+                            <input type="email" id="email" class="form-input" placeholder="yourname@rathinam.in"
+                                required autocomplete="email" />
                             <div class="input-focus-line"></div>
                         </div>
+                        <small class="input-hint">Must be a valid @rathinam.in college email address</small>
                     </div>
 
-                    <div class="form-group">
-                        <label for="department" class="form-label">
-                            <span class="label-text">Department</span>
-                            <span class="label-required">*</span>
-                        </label>
-                        <div class="input-wrapper">
-                            <i class="input-icon fas fa-building"></i>
-                            <input type="text" id="department" class="form-input" placeholder="e.g., CSE(AIML)"
-                                required />
-                            <div class="input-focus-line"></div>
-                        </div>
+                    <button type="button" class="signup-button" id="sendOtpBtn">
+                        <span class="button-text">Send Verification OTP</span>
+                        <span class="button-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </span>
+                        <div class="button-glow"></div>
+                    </button>
+
+                    <div id="step1StatusMessage" class="status-message" role="alert"></div>
+
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Password -->
-                <div class="form-group">
-                    <label for="password" class="form-label">
-                        <span class="label-text">Password</span>
-                        <span class="label-required">*</span>
-                    </label>
-                    <div class="input-wrapper password-wrapper">
-                        <i class="input-icon fas fa-lock"></i>
-                        <input type="password" id="password" class="form-input" placeholder="Create a strong password"
-                            required autocomplete="new-password" />
-                        <button type="button" class="password-toggle" id="togglePassword"
-                            aria-label="Toggle password visibility">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <div class="input-focus-line"></div>
-                    </div>
-                </div>
-
-                <!-- Confirm Password -->
-                <div class="form-group">
-                    <label for="confirmPassword" class="form-label">
-                        <span class="label-text">Confirm Password</span>
-                        <span class="label-required">*</span>
-                    </label>
-                    <div class="input-wrapper password-wrapper">
-                        <i class="input-icon fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" class="form-input"
-                            placeholder="Re-enter your password" required autocomplete="new-password" />
-                        <button type="button" class="password-toggle" id="toggleConfirmPassword"
-                            aria-label="Toggle password visibility">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <div class="input-focus-line"></div>
-                    </div>
-                </div>
-
-                <!-- Sign Up Button -->
-                <button type="submit" class="signup-button" id="signupBtn">
-                    <span class="button-text">Create Account</span>
-                    <span class="button-icon">
-                        <i class="fas fa-arrow-right"></i>
-                    </span>
-                    <div class="button-glow"></div>
-                </button>
-
-                <!-- Status Message -->
-                <div id="statusMessage" class="status-message" role="alert"></div>
-
-                <!-- Login Link -->
-                <div class="form-footer">
-                    <p>Already have an account? <a href="login.html" class="login-link">Sign In</a></p>
-                </div>
-            </form>
-
-            <!-- OTP Verification Section (Hidden by default) -->
-            <div class="otp-section" id="otpSection" style="display: none;">
+            <!-- ==================== STEP 2: OTP VERIFICATION ==================== -->
+            <div class="step-section" id="step2Section" style="display: none;">
                 <div class="otp-header">
-                    <button type="button" class="back-button" id="backToForm" aria-label="Go back to form">
+                    <button type="button" class="back-button" id="backToStep1" aria-label="Go back to email">
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <div>
@@ -168,7 +97,8 @@
                 </div>
 
                 <div class="otp-input-group">
-                    <input type="text" id="otpInput1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                    <input type="text" id="otpInput1" class="otp-input" maxlength="1" inputmode="numeric"
+                        autocomplete="one-time-code" />
                     <input type="text" id="otpInput2" class="otp-input" maxlength="1" inputmode="numeric" />
                     <input type="text" id="otpInput3" class="otp-input" maxlength="1" inputmode="numeric" />
                     <input type="text" id="otpInput4" class="otp-input" maxlength="1" inputmode="numeric" />
@@ -177,7 +107,7 @@
                 </div>
 
                 <button type="button" class="signup-button verify-btn" id="verifyOtpBtn">
-                    <span class="button-text">Verify & Create Account</span>
+                    <span class="button-text">Verify Email</span>
                     <span class="button-icon">
                         <i class="fas fa-check-circle"></i>
                     </span>
@@ -191,6 +121,126 @@
                     <button type="button" class="resend-button" id="resendOtpBtn" style="display: none;">
                         <i class="fas fa-redo"></i> Resend OTP
                     </button>
+                </div>
+            </div>
+
+            <!-- ==================== STEP 3: REGISTRATION DETAILS ==================== -->
+            <div class="step-section" id="step3Section" style="display: none;">
+                <div class="step-content">
+                    <div class="verified-badge">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="verifiedEmailText"></span>
+                    </div>
+
+                    <h2 class="step-title">Complete Your Profile</h2>
+                    <p class="step-description">Your email is verified! Now fill in your details</p>
+
+                    <form class="signup-form" id="signupForm">
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="fullname" class="form-label">
+                                <span class="label-text">Full Name</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="input-icon fas fa-user"></i>
+                                <input type="text" id="fullname" class="form-input"
+                                    placeholder="Enter your full name" required autocomplete="name" />
+                                <div class="input-focus-line"></div>
+                            </div>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label for="username" class="form-label">
+                                <span class="label-text">Username</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="input-icon fas fa-at"></i>
+                                <input type="text" id="username" class="form-input" placeholder="Choose a username"
+                                    required autocomplete="username" />
+                                <div class="input-focus-line"></div>
+                            </div>
+                        </div>
+
+                        <!-- Roll Number and Department (Side by Side) -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rollno" class="form-label">
+                                    <span class="label-text">Roll Number</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <i class="input-icon fas fa-id-badge"></i>
+                                    <input type="text" id="rollno" class="form-input" placeholder="e.g., 24110076"
+                                        required />
+                                    <div class="input-focus-line"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="department" class="form-label">
+                                    <span class="label-text">Department</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <i class="input-icon fas fa-building"></i>
+                                    <input type="text" id="department" class="form-input"
+                                        placeholder="e.g., CSE(AIML)" required />
+                                    <div class="input-focus-line"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label for="password" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="input-wrapper password-wrapper">
+                                <i class="input-icon fas fa-lock"></i>
+                                <input type="password" id="password" class="form-input"
+                                    placeholder="Create a strong password" required autocomplete="new-password" />
+                                <button type="button" class="password-toggle" id="togglePassword"
+                                    aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="input-focus-line"></div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-group">
+                            <label for="confirmPassword" class="form-label">
+                                <span class="label-text">Confirm Password</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="input-wrapper password-wrapper">
+                                <i class="input-icon fas fa-lock"></i>
+                                <input type="password" id="confirmPassword" class="form-input"
+                                    placeholder="Re-enter your password" required autocomplete="new-password" />
+                                <button type="button" class="password-toggle" id="toggleConfirmPassword"
+                                    aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="input-focus-line"></div>
+                            </div>
+                        </div>
+
+                        <!-- Create Account Button -->
+                        <button type="submit" class="signup-button" id="signupBtn">
+                            <span class="button-text">Create Account</span>
+                            <span class="button-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <div class="button-glow"></div>
+                        </button>
+
+                        <!-- Status Message -->
+                        <div id="statusMessage" class="status-message" role="alert"></div>
+                    </form>
                 </div>
             </div>
         </div>

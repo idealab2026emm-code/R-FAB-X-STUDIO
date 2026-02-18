@@ -20,8 +20,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// In-memory OTP store: email -> { otp, expiry, userData }
+// In-memory OTP store: email -> { otp, expiry }
 const otpStore = new Map();
+
+// In-memory verified emails store: email -> { verifiedAt }
+// Emails here have been verified via OTP and can proceed to signup
+const verifiedEmails = new Map();
 
 // Middleware
 app.use(cors({
@@ -235,51 +239,41 @@ app.post("/register", async (req, res) => {
 
 // ============================================
 // SEND OTP - EMAIL VERIFICATION FOR SIGNUP
+// Only requires email (college mail @rathinam.in)
 // ============================================
 app.post("/api/send-otp", async (req, res) => {
   console.log("\n========== POST /api/send-otp ==========");
   try {
-    const { username, password, fullname, email, rollno, department } = req.body;
+    const { email } = req.body;
 
     console.log(`📧 OTP request for: ${email}`);
 
-    // Validate all required fields
-    if (!username || !password || !fullname || !email || !rollno || !department) {
-      console.log("❌ Missing required fields");
-      return res.status(400).json({ error: "All fields are required" });
+    // Validate email
+    if (!email) {
+      console.log("❌ Email is required");
+      return res.status(400).json({ error: "Email is required" });
     }
 
-    // Validate email domain
+    // Validate email domain (@rathinam.in college mail)
     const emailRegex = /^[a-zA-Z0-9._-]+@rathinam\.in$/;
     if (!emailRegex.test(email)) {
       console.log(`❌ Invalid email domain: ${email}`);
-      return res.status(400).json({ error: "Email must be a valid @rathinam.in address" });
+      return res.status(400).json({ error: "Email must be a valid @rathinam.in college mail address" });
     }
 
-    // Check if username already exists
-    const existingUsername = await pool.query("SELECT * FROM users WHERE username=$1", [username]);
-    if (existingUsername.rows.length > 0) {
-      console.log(`❌ Username already exists: ${username}`);
-      return res.status(400).json({ error: "Username already exists" });
-    }
-
-    // Check if email already exists
+    // Check if email already registered
     const existingEmail = await pool.query("SELECT * FROM users WHERE mail=$1", [email]);
     if (existingEmail.rows.length > 0) {
       console.log(`❌ Email already exists: ${email}`);
-      return res.status(400).json({ error: "Email already registered" });
+      return res.status(400).json({ error: "This college email is already registered" });
     }
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
 
-    // Store OTP with user data
-    otpStore.set(email, {
-      otp,
-      expiry,
-      userData: { username, password, fullname, email, rollno, department }
-    });
+    // Store OTP (email only, no user data needed)
+    otpStore.set(email, { otp, expiry });
 
     console.log(`🔑 OTP generated for ${email}: ${otp}`);
 
@@ -292,7 +286,7 @@ app.post("/api/send-otp", async (req, res) => {
         <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
           <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
             <h2 style="color: #1f2937; margin-bottom: 10px;">Email Verification</h2>
-            <p style="color: #6b7280; margin-bottom: 30px;">Use this OTP to verify your email address for R-FAB X-STUDIO</p>
+            <p style="color: #6b7280; margin-bottom: 30px;">Use this OTP to verify your college email for R-FAB X-STUDIO</p>
             <div style="background: #f3f4f6; border-radius: 12px; padding: 20px; margin: 20px 0;">
               <span style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #0066ff;">${otp}</span>
             </div>
@@ -308,7 +302,7 @@ app.post("/api/send-otp", async (req, res) => {
     await transporter.sendMail(mailOptions);
     console.log(`✅ OTP email sent to ${email}`);
 
-    res.status(200).json({ message: "OTP sent to your email address" });
+    res.status(200).json({ message: "OTP sent to your college email address" });
 
   } catch (err) {
     console.error("❌ Send OTP error:", err);
@@ -317,7 +311,8 @@ app.post("/api/send-otp", async (req, res) => {
 });
 
 // ============================================
-// VERIFY OTP & CREATE ACCOUNT
+// VERIFY OTP - MARKS EMAIL AS VERIFIED
+// Does NOT create account (that happens in /api/signup)
 // ============================================
 app.post("/api/verify-otp", async (req, res) => {
   console.log("\n========== POST /api/verify-otp ==========");
@@ -352,21 +347,16 @@ app.post("/api/verify-otp", async (req, res) => {
 
     console.log(`✅ OTP verified for: ${email}`);
 
-    // Create user account
-    const { username, password, fullname, rollno, department } = stored.userData;
-
-    const result = await pool.query(
-      "INSERT INTO users (username, password, fullname, mail, rollno, department) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, username, fullname, mail, rollno, department",
-      [username, password, fullname, email, rollno, department]
-    );
-
-    // Clear OTP
+    // Clear OTP from store
     otpStore.delete(email);
 
-    console.log(`✅ User created successfully: ${username}`);
-    res.status(201).json({
-      message: "Account created successfully",
-      user: result.rows[0]
+    // Mark email as verified (valid for 15 minutes to complete signup)
+    verifiedEmails.set(email, { verifiedAt: Date.now() });
+
+    res.status(200).json({
+      message: "Email verified successfully! Please complete your registration.",
+      verified: true,
+      email: email
     });
 
   } catch (err) {
@@ -376,7 +366,8 @@ app.post("/api/verify-otp", async (req, res) => {
 });
 
 // ============================================
-// SIGNUP API (LEGACY - DIRECT WITHOUT OTP)
+// SIGNUP API - REQUIRES VERIFIED EMAIL
+// Email must be verified via OTP before calling this
 // ============================================
 app.post("/api/signup", async (req, res) => {
   console.log("\n========== POST /api/signup ==========");
@@ -391,14 +382,21 @@ app.post("/api/signup", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Validate email domain - must be @rathinam.in
-    const emailRegex = /^[a-zA-Z0-9._-]+@rathinam\.in$/;
-    if (!emailRegex.test(email)) {
-      console.log(`❌ Invalid email domain: ${email}`);
-      return res.status(400).json({ error: "Email must be a valid @rathinam.in address" });
+    // Check if email was verified via OTP
+    const verified = verifiedEmails.get(email);
+    if (!verified) {
+      console.log(`❌ Email not verified: ${email}`);
+      return res.status(400).json({ error: "Email not verified. Please verify your college email first." });
     }
 
-    console.log("✓ Email domain validation passed");
+    // Check if verification is still valid (15 min window)
+    if (Date.now() - verified.verifiedAt > 15 * 60 * 1000) {
+      console.log(`❌ Email verification expired for: ${email}`);
+      verifiedEmails.delete(email);
+      return res.status(400).json({ error: "Email verification expired. Please verify again." });
+    }
+
+    console.log("✓ Email verified via OTP");
 
     // Check if username already exists
     const existingUsername = await pool.query(
@@ -429,6 +427,9 @@ app.post("/api/signup", async (req, res) => {
       "INSERT INTO users (username, password, fullname, mail, rollno, department) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, username, fullname, mail, rollno, department",
       [username, password, fullname, email, rollno, department]
     );
+
+    // Clear verified email
+    verifiedEmails.delete(email);
 
     console.log(`✅ User created successfully: ${username}`);
     res.status(201).json({
