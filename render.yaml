@@ -9,7 +9,9 @@ services:
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        value: postgresql://r_fab_x_studio_user:Mab2KFsW7vOTyHCJCBEGjiuzSU5AVpkG@dpg-d6a7dbgboq4c73dsqde0-a/r_fab_x_studio
+        value: postgresql://r_fab_x_studio_1_user:9yax1JG5E2zUM98UhNo6mXaNtUe3IVdN@dpg-d6ap14rh46gs738ipjd0-a.oregon-postgres.render.com/r_fab_x_studio_1
+      - key: DB_SSL
+        value: true
       - key: NODE_ENV
         value: production
       - key: SMTP_EMAIL
@@ -19,8 +21,8 @@ services:
     autoDeploy: false
 
 databases:
-  - name: R-FAB X-STUDIO
+  - name: R-FAB X-STUDIO-1   
     plan: free
-    databaseName: r_fab_x_studio
+    databaseName: r_fab_x_studio-1
     user: admin 
 
