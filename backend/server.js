@@ -1235,7 +1235,7 @@ app.get("/users", async (req, res) => {
     console.log("📨 GET /users endpoint called");
 
     const result = await pool.query(
-      "SELECT id, username, fullname, mail, rollno, department, password FROM users WHERE username NOT IN ('admin', 'admin1', 'admin2') ORDER BY username ASC"
+      "SELECT id, username, fullname, mail, rollno, department, password, role FROM users WHERE username NOT IN ('admin', 'admin1', 'admin2') ORDER BY username ASC"
     );
 
     console.log(`✓ Found ${result.rows.length} users`);
@@ -1498,6 +1498,22 @@ app.use((err, req, res, next) => {
 async function runMigrations() {
   try {
     console.log("🔧 Running auto-migrations...");
+
+    // Check and add role column to users table if missing
+    const roleCheck = await pool.query(`
+      SELECT column_name FROM information_schema.columns 
+      WHERE table_name = 'users' AND column_name = 'role'
+    `);
+    if (roleCheck.rows.length === 0) {
+      await pool.query("ALTER TABLE users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
+      console.log("  ✅ Added missing column: users.role");
+    } else {
+      console.log("  ✓ Column exists: users.role");
+    }
+
+    // Set role = 'user' for any users with NULL role
+    await pool.query("UPDATE users SET role = 'user' WHERE role IS NULL");
+    console.log("  ✓ Ensured all users have a role set");
 
     // Check and add amount_with_gst column if missing
     const gstCheck = await pool.query(`

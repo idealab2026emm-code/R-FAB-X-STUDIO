@@ -53,8 +53,9 @@ async function loadStats() {
     const users = await fetch('/users');
     if (users.ok) {
       const data = await users.json();
-      document.getElementById('totalUsers').textContent = data.length;
-      console.log('✅ Total Users:', data.length);
+      const userOnly = data.filter(u => !u.role || u.role === 'user');
+      document.getElementById('totalUsers').textContent = userOnly.length;
+      console.log('✅ Total Users (role=user):', userOnly.length);
     }
   } catch (e) {
     console.error('❌ Users error:', e);
