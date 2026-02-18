@@ -73,6 +73,7 @@ const createTablesQuery = `
     mail VARCHAR(100) UNIQUE NOT NULL,
     rollno VARCHAR(20) NOT NULL,
     department VARCHAR(50) NOT NULL,
+    role VARCHAR(20) DEFAULT 'student',
     is_verified BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
@@ -128,6 +129,13 @@ const createTablesQuery = `
   DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='is_verified') THEN
       ALTER TABLE users ADD COLUMN is_verified BOOLEAN DEFAULT false;
+    END IF;
+  END $$;
+
+  -- Add role to existing users table if missing
+  DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='role') THEN
+      ALTER TABLE users ADD COLUMN role VARCHAR(20) DEFAULT 'student';
     END IF;
   END $$;
 `;
@@ -447,10 +455,10 @@ app.post("/api/signup", async (req, res) => {
 
     console.log("✓ Username and email available");
 
-    // Insert new user with is_verified=true (No OTP required)
+    // Insert new user with is_verified=true (No OTP required) and default role 'student'
     const result = await pool.query(
-      "INSERT INTO users (username, password, fullname, mail, rollno, department, is_verified) VALUES ($1,$2,$3,$4,$5,$6,true) RETURNING id, username, fullname, mail, rollno, department, is_verified",
-      [username, password, fullname, email, rollno, department]
+      "INSERT INTO users (username, password, fullname, mail, rollno, department, is_verified, role) VALUES ($1,$2,$3,$4,$5,$6,true,$7) RETURNING id, username, fullname, mail, rollno, department, is_verified, role",
+      [username, password, fullname, email, rollno, department, 'student']
     );
 
     console.log(`✅ User created successfully: ${username}`);
@@ -629,9 +637,12 @@ app.post("/upload-users", async (req, res) => {
 
         // INSERT new user
         console.log(`  ✨ Creating new user...`);
+        // Default role to 'student' if not provided
+        const role = user.role ? String(user.role).trim().toLowerCase() : 'student';
+
         await pool.query(
-          "INSERT INTO users (username, password, fullname, mail, rollno, department) VALUES ($1,$2,$3,$4,$5,$6)",
-          [username, password, fullname, mail, rollno, department]
+          "INSERT INTO users (username, password, fullname, mail, rollno, department, role, is_verified) VALUES ($1,$2,$3,$4,$5,$6,$7,true)",
+          [username, password, fullname, mail, rollno, department, role]
         );
 
         uploadedCount++;
