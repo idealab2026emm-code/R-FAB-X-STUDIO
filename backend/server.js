@@ -10,7 +10,7 @@ const app = express();
 // EMAIL OTP CONFIGURATION
 // ============================================
 const SMTP_EMAIL = process.env.SMTP_EMAIL || "idealab2026emm@gmail.com";
-const SMTP_PASSWORD = process.env.SMTP_PASSWORD || "Nila@3030";
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD || "nsncqufnpwtxmwvm";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",

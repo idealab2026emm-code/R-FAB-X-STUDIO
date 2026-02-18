@@ -15,7 +15,7 @@ services:
       - key: SMTP_EMAIL
         value: idealab2026emm@gmail.com
       - key: SMTP_PASSWORD
-        value: Nila@3030
+        value: nsncqufnpwtxmwvm
     autoDeploy: false
 
 databases:
